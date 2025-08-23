@@ -21,7 +21,10 @@ class DepartmentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required|unique:departments']);
+        $request->validate(
+            ['name' => 'required|unique:departments'
+        ]);
+        
         Department::create($request->only('name'));
 
         return redirect()->route('departments.index')
@@ -40,7 +43,10 @@ class DepartmentController extends Controller
 
     public function update(Request $request, Department $department)
     {
-        $request->validate(['name' => 'required|unique:departments,name,' . $department->id]);
+        $request->validate([
+            'name' => 'required|unique:departments,name,' . $department->id]
+        );
+
         $department->update($request->only('name'));
 
         return redirect()->route('departments.index')
