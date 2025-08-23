@@ -12,9 +12,6 @@
               <!-- Search -->
               <div class="navbar-nav align-items-center">
                 <div class="nav-item navbar-search-wrapper px-md-0 px-2 mb-0">
-                  <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
-                    <span class="d-inline-block text-body-secondary fw-normal" id="autocomplete"></span>
-                  </a>
                 </div>
               </div>
 
@@ -22,7 +19,9 @@
 
               <ul class="navbar-nav flex-row align-items-center ms-md-auto">
                
-
+                <li>
+                  <span id="live-datetime" class="badge bg-info"></span>
+                </li>
                 <!-- Quick links  -->
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown">
                   <a
@@ -458,3 +457,29 @@
               </ul>
             </div>
           </nav>
+
+          <script>
+    function updateDateTime() {
+        const now = new Date();
+
+        // Format date and time
+        const options = {
+            weekday: 'short', 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+        };
+
+        document.getElementById('live-datetime').textContent = 
+            now.toLocaleString('en-US', options);
+    }
+
+    // Update immediately
+    updateDateTime();
+
+    // Update every second
+    setInterval(updateDateTime, 1000);
+</script>

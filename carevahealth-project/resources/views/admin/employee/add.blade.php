@@ -1,6 +1,8 @@
 @extends('admin.layouts.app')
 @section('admin_content')
 
+<link rel="stylesheet" href="../../assets/vendor/libs/dropzone/dropzone.css" />
+
 <div class="container-xxl flex-grow-1 container-p-y">
                  <!-- Collapsible Section -->
             <div class="row my-6">
@@ -104,36 +106,46 @@
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="department">Department</label>
                                         <select id="department" name='department' class="select form-select">
-                                            <option value="seo" selected>SEO</option>
-                                            <option value="sales">Sales</option>
+                                            <option selected>Select Department</option>
+                                            @foreach($departments as $department)
+                                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="role">Role</label>
                                         <select id="role" name='role' class="select form-select">
-                                            <option value="seo" selected>SEO</option>
-                                            <option value="sales">Sales</option>
+                                            <option selected>Select Role</option>
+                                            @foreach($roles as $role)
+                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="role">Employee Type</label>
                                         <select id="role" name='role' class="select form-select">
-                                            <option value="seo" selected>SEO</option>
-                                            <option value="sales">Sales</option>
+                                            <option selected>Select Employee Type</option>
+                                            @foreach($employmentTypes as $employmentType)
+                                            <option value="{{ $employmentType->id }}">{{ $employmentType->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="designation">Designation</label>
                                         <select id="designation" name='designation' class="select form-select">
-                                            <option value="seo" selected>SEO</option>
-                                            <option value="sales">Sales</option>
+                                            <option selected>Select Designation</option>
+                                            @foreach($designations as $designations)
+                                            <option value="{{ $designations->id }}">{{ $designations->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="shift_type">Shift Type</label>
                                         <select id="shift_type" name='shift_type' class="select form-select">
-                                            <option value="seo" selected>SEO</option>
-                                            <option value="sales">Sales</option>
+                                            <option selected>Select Shift Type</option>
+                                            @foreach($shiftTypes as $shiftType)
+                                            <option value="{{ $shiftType->id }}">{{ $shiftType->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -266,31 +278,37 @@
                     </div>
 
                     <div class="card accordion-item">
-                      <h2 class="accordion-header" id="headingPersonalinformation">
+                      <h2 class="accordion-header" id="headingDocuments">
                         <button
                           type="button"
                           class="accordion-button collapsed"
                           data-bs-toggle="collapse"
-                          data-bs-target="#collapsePersonalinformation"
+                          data-bs-target="#collapseDocuments"
                           aria-expanded="false"
-                          aria-controls="collapsePersonalinformation">
+                          aria-controls="collapseDocuments">
                           Documents
                         </button>
                       </h2>
                       <div
-                        id="collapsePersonalinformation"
+                        id="collapseDocuments"
                         class="accordion-collapse collapse"
-                        aria-labelledby="headingPersonalinformation"
+                        aria-labelledby="headingDocuments"
                         data-bs-parent="#collapsibleSection">
                                 <div class="accordion-body">
                                     <div class="row g-6">
                                        
-                                        <div class="col-md-6">
-                                        <label class="form-label" for="multicol-birthdate">Upload Documents</label>
-                                        <input
-                                            type="file"
-                                            class="form-control"
-                                            />
+                                        <div class="col-12">
+                                            <form action="/upload" class="dropzone needsclick" id="dropzone-multi">
+                                                <div class="dz-message needsclick">
+                                                Drop files here or click to upload
+                                                <span class="note needsclick"
+                                                    >you can add multiple documents here.</span
+                                                >
+                                                </div>
+                                                <div class="fallback">
+                                                <input name="file" type="file" />
+                                                </div>
+                                            </form>
                                         </div>
                                         <div class="mt-4">
                                             <button type="submit" class="btn btn-primary me-4">Submit</button>
@@ -306,4 +324,8 @@
               </div>
 </div>
 
+
 @endsection
+
+
+

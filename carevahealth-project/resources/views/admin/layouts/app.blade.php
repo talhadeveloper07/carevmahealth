@@ -43,7 +43,6 @@
     <link rel="stylesheet" href="../../assets/css/demo.css" />
     <link rel="stylesheet" href="../../assets/css/custom.css" />
     <link rel="stylesheet" href="../../assets/vendor/libs/select2/select2.css" />
-    <link rel="stylesheet" href="../../assets/vendor/libs/dropzone/dropzone.css" />
 
 
     <!-- Vendors CSS -->
@@ -133,18 +132,18 @@
     <script src="../../assets/vendor/libs/@form-validation/bootstrap5.js"></script>
     <script src="../../assets/vendor/libs/@form-validation/auto-focus.js"></script>
 
-    <!-- Main JS -->
-
-    <script src="../../assets/js/main.js"></script>
-
     <script src="../../assets/vendor/libs/cleave-zen/cleave-zen.js"></script>
     <script src="../../assets/vendor/libs/moment/moment.js"></script>
     <script src="../../assets/vendor/libs/flatpickr/flatpickr.js"></script>
     <script src="../../assets/js/form-layouts.js"></script>
     <script src="../../assets/vendor/libs/select2/select2.js"></script>
     <script src="../../assets/js/form-layouts.js"></script>
-    <script src="../../assets/js/forms-file-upload.js"></script>
     <script src="../../assets/vendor/libs/dropzone/dropzone.js"></script>
+    <script src="../../assets/js/forms-file-upload.js"></script>
+
+        <!-- Main JS -->
+
+        <script src="../../assets/js/main.js"></script>
 
 
     @stack('scripts')

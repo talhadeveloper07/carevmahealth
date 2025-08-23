@@ -28,8 +28,8 @@
         <!-- Login -->
         <div class="d-flex col-12 col-xl-4 align-items-center authentication-bg p-sm-12 p-6">
           <div class="w-px-400 mx-auto mt-12 pt-5">
-            <h4 class="mb-1">Welcome to {{ $global_setting->site_title ?? 'Default Site Name' }}</h4>
-            <p class="mb-6">Please sign-in to your account for booking appointments</p>
+            <h4 class="mb-1">Welcome to Care VMA Health</h4>
+            <p class="mb-6">Please sign-in to your account for updates</p>
 
             <form id="formAuthentication" class="mb-6" method="POST" action="{{ route('login') }}">
                 @csrf
