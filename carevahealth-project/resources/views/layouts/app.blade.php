@@ -1,80 +1,144 @@
+
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+      <title>{{ $global_setting->site_title ?? 'Default Site Name' }}</title>
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico" />
 
     <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
+      rel="stylesheet" />
 
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <link rel="stylesheet" href="../../assets/vendor/fonts/iconify-icons.css" />
+    <link rel="stylesheet" href="../../assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="../../assets/vendor/css/pages/cards-advance.css" />
+
+
+
+
+    <!-- Core CSS -->
+    <!-- build:css assets/vendor/css/theme.css  -->
+
+    <link rel="stylesheet" href="../../assets/vendor/libs/node-waves/node-waves.css" />
+
+    <link rel="stylesheet" href="../../assets/vendor/css/core.css" />
+    <link rel="stylesheet" href="../../assets/css/demo.css" />
+    <link rel="stylesheet" href="../../assets/css/custom.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/dropzone/dropzone.css" />
+
+
+    <!-- Vendors CSS -->
+
+    <link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <!-- endbuild -->
+
+    <link rel="stylesheet" href="../../assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/@form-validation/form-validation.css" />
+
+    <link rel="stylesheet" href="{{asset('assets/css/styling.css')}}">
+
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="../../assets/vendor/js/helpers.js"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <script src="../../assets/vendor/js/template-customizer.js"></script>
+
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+
+    <script src="../../assets/js/config.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+ 
+
+  <style>
+    h2#swal2-title {
+    font-size: 15px !important;
+    color: black
+    font-weight: 700;
+    }
+    .swal2-popup{
+      z-index: 999 !important;
+    }
+    .swal2-container.swal2-top-end.swal2-backdrop-show {
+        width: 27rem !important;
+    }
+    .swal2-toast div:where(.swal2-html-container) {
+        font-size: 13px !important;
+        font-weight: 700;
+        color: red;
+        line-height: 1.5em;
+    }
+  </style>
+
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <main class="py-4">
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
             @yield('content')
-        </main>
+        </div>
     </div>
+
+        
+   
+
+    <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="../../assets/vendor/libs/popper/popper.js"></script>
+    <script src="../../assets/vendor/js/bootstrap.js"></script>
+    <script src="../../assets/vendor/libs/node-waves/node-waves.js"></script>
+
+    <script src="../../assets/vendor/libs/@algolia/autocomplete-js.js"></script>
+
+    <script src="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+    <script src="../../assets/vendor/libs/hammer/hammer.js"></script>
+
+    <script src="../../assets/vendor/libs/i18n/i18n.js"></script>
+
+    <script src="../../assets/vendor/js/menu.js"></script>
+
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="../../assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+
+    <script src="../../assets/vendor/libs/@form-validation/popular.js"></script>
+    <script src="../../assets/vendor/libs/@form-validation/bootstrap5.js"></script>
+    <script src="../../assets/vendor/libs/@form-validation/auto-focus.js"></script>
+
+    <!-- Main JS -->
+
+    <script src="../../assets/js/main.js"></script>
+
+    <script src="../../assets/vendor/libs/cleave-zen/cleave-zen.js"></script>
+    <script src="../../assets/vendor/libs/moment/moment.js"></script>
+    <script src="../../assets/vendor/libs/flatpickr/flatpickr.js"></script>
+    <script src="../../assets/js/form-layouts.js"></script>
+    <script src="../../assets/vendor/libs/select2/select2.js"></script>
+    <script src="../../assets/js/form-layouts.js"></script>
+    <script src="../../assets/js/forms-file-upload.js"></script>
+    <script src="../../assets/vendor/libs/dropzone/dropzone.js"></script>
+
+
+    @stack('scripts')
+    <!-- Page JS -->
 </body>
 </html>

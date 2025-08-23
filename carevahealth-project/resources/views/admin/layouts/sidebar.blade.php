@@ -3,9 +3,9 @@
             <a href="/" class="app-brand-link">
               <span class="app-brand-logo demo">
                 @if(!empty($global_setting->logo))
-                <img src="" alt="Site Logo" style="height: 60px;">
+                <img src="{{ asset('Care_VMA.webp') }}" alt="Site Logo" style="height:auto;width:170px;">
               @else
-                <img src="" alt="Default Logo" style="height: 60px;">
+                <img src="{{ asset('Care_VMA.webp') }}" alt="Default Logo" style="height:auto;width:170px;">
               @endif
 
               </span>
@@ -62,10 +62,17 @@
             </li>
 
             <li class="menu-item">
-              <a href="#" class="menu-link">
+              <a href="#" class="menu-link menu-toggle">
                 <i class="menu-icon icon-base ti tabler-users"></i>
                 <div data-i18n="Employees">Employees</div>
               </a>
+              <ul class="menu-sub">
+                    <li class="menu-item">
+                      <a href="{{ route('add.employee') }}" class="menu-link">
+                        <div data-i18n="Add New Employee">Add New Employee</div>
+                      </a>
+                    </li>
+                  </ul>
             </li>
 
             <li class="menu-item">
