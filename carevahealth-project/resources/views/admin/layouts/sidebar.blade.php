@@ -110,6 +110,63 @@
               </a>
             </li>
             
+<li class="menu-item">
+  <a href="javascript:void(0);" class="menu-link menu-toggle">
+    <i class="menu-icon icon-base ti tabler-settings"></i>
+    <div data-i18n="Employee Settings">Employee Settings</div>
+  </a>
+  <ul class="menu-sub">
+
+    <li class="menu-item">
+      <a href="{{ route('departments.index') }}" class="menu-link">
+        <div data-i18n="Departments">Departments</div>
+      </a>
+    </li>
+
+    <li class="menu-item">
+      <a href="{{ route('roles.index') }}" class="menu-link">
+        <div data-i18n="Roles">Roles</div>
+      </a>
+    </li>
+
+    <li class="menu-item">
+      <a href="{{ route('employment-types.index') }}" class="menu-link">
+        <div data-i18n="Employment Types">Employment Types</div>
+      </a>
+    </li>
+
+    <li class="menu-item">
+      <a href="{{ route('shift-types.index') }}" class="menu-link">
+        <div data-i18n="Shift Types">Shift Types</div>
+      </a>
+    </li>
+
+    <li class="menu-item">
+      <a href="{{ route('designations.index') }}" class="menu-link">
+        <div data-i18n="Designations">Designations</div>
+      </a>
+    </li>
+
+    <li class="menu-item">
+      <a href="{{ route('employee-statuses.index') }}" class="menu-link">
+        <div data-i18n="Employee Statuses">Employee Statuses</div>
+      </a>
+    </li>
+
+    <li class="menu-item">
+      <a href="{{ route('expertises.index') }}" class="menu-link">
+        <div data-i18n="Current Expertise">Current Expertise</div>
+      </a>
+    </li>
+
+    <li class="menu-item">
+      <a href="{{ route('reporting-managers.index') }}" class="menu-link">
+        <div data-i18n="Reporting Managers">Reporting Managers</div>
+      </a>
+    </li>
+
+  </ul>
+</li>
 
             <!-- e-commerce-app menu end -->
           
