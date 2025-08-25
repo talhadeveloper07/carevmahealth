@@ -11,7 +11,7 @@
     <table class="table table-bordered">
         <thead><tr><th>#</th><th>Name</th><th>Actions</th></tr></thead>
         <tbody>
-            @foreach($employeeStatuses as $employeeStatus)
+            @foreach($statuses as $employeeStatus)
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $employeeStatus->name }}</td>

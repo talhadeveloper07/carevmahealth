@@ -11,7 +11,7 @@
     <table class="table table-bordered">
         <thead><tr><th>#</th><th>Name</th><th>Actions</th></tr></thead>
         <tbody>
-            @foreach($reportingManagers as $reportingManager)
+            @foreach($managers as $reportingManager)
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $reportingManager->name }}</td>
