@@ -21,6 +21,10 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
+Route::get('/complete-profile/{employee}', [EmployeeController::class, 'showCompleteProfileForm'])->name('employee.complete-profile');
+Route::post('/complete-profile/{employee}', [EmployeeController::class, 'submitCompleteProfile']);
+
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard',function(){
         return view('admin.dashboard.index');
@@ -37,5 +41,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     // Employee Routes
     Route::get('add-employee',[EmployeeController::class,'add_employee'])->name('add.employee');
+    Route::post('insert-employee',[EmployeeController::class,'insert_employee'])->name('insert.employee');
+    
 });
 
+require __DIR__.'/employee.php';

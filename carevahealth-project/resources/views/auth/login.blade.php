@@ -43,6 +43,9 @@
                   placeholder="Enter your email or username"
                   value="{{ old('email') }}" required autocomplete="email"
                   autofocus />
+                  @error('email')
+                      <div class="text-danger mt-1 small">{{ $message }}</div>
+                  @enderror
               </div>
               <div class="mb-6 form-password-toggle form-control-validation">
                 <label class="form-label" for="password">Password</label>
@@ -56,6 +59,9 @@
                     aria-describedby="password" />
                   <span class="input-group-text cursor-pointer"><i class="icon-base ti tabler-eye-off"></i></span>
                 </div>
+                @error('password')
+                    <div class="text-danger mt-1 small">{{ $message }}</div>
+                @enderror
               </div>
               <div class="my-8">
                 <div class="d-flex justify-content-between">

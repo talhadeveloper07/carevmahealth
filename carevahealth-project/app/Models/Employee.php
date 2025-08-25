@@ -43,6 +43,7 @@ class Employee extends Model
         'expertise_id',
         'break_allowed_hours',
         'reporting_manager_id',
+        'profile_completed'
     ];
 
     protected $hidden = [

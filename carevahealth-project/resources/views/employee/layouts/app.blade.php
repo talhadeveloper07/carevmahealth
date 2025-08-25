@@ -23,8 +23,6 @@
     <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
     <link rel="stylesheet" href="/assets/vendor/fonts/fontawesome.css" />
     <link rel="stylesheet" href="/assets/vendor/css/pages/cards-advance.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/dropzone/dropzone.css" />
-
     
     <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -91,23 +89,35 @@
         line-height: 1.5em;
     }
   </style>
+   @php
+      use Illuminate\Support\Facades\Auth;
+      $employee = \App\Models\Employee::where('user_id', Auth::id())->first();
+  @endphp
+
+  @if($employee && !$employee->profile_completed)
+    <style>
+        .content-wrapper {
+            overflow: hidden; /* Prevent scrolling */
+        }
+    </style>
+  @endif
 
 </head>
 <body>
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
-        @include('admin.layouts.sidebar')
+        @include('employee.layouts.sidebar')
             <div class="layout-page">
-                @include('admin.layouts.nav')
-                <div class="content-wrapper">
+                @include('employee.layouts.nav')
+                <div class="content-wrapper position-relative">
+              
                 <!-- Content -->
-                @yield('admin_content')
+                @yield('employee_content')
+                @include('employee.partials.profile-lock')
                 </div>
-                @include('admin.layouts.footer')
             </div>
         </div>
     </div>
-
 
 
     <script src="/assets/vendor/libs/jquery/jquery.js"></script>

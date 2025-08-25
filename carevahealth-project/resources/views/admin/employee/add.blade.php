@@ -1,10 +1,13 @@
 @extends('admin.layouts.app')
 @section('admin_content')
 
-<link rel="stylesheet" href="../../assets/vendor/libs/dropzone/dropzone.css" />
-
 <div class="container-xxl flex-grow-1 container-p-y">
                  <!-- Collapsible Section -->
+                    @if(session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+        <form action="{{ route('insert.employee') }}" method="POST" enctype="multipart/form-data">
+            @csrf
             <div class="row my-6">
                 <div class="col">
                   <h4>Add New Employee</h4>
@@ -29,11 +32,11 @@
                         <div class="row g-6">
                                 <div class="col-md-6">
                                 <label class="form-label" for="multicol-first-name">First Name</label>
-                                <input type="text" id="multicol-first-name" class="form-control" placeholder="John" />
+                                <input type="text" id="multicol-first-name" name='first_name' class="form-control @error('first_name') is-invalid @enderror" placeholder="John" />
                                 </div>
                                 <div class="col-md-6">
                                 <label class="form-label" for="multicol-last-name">Last Name</label>
-                                <input type="text" id="multicol-last-name" class="form-control" placeholder="Doe" />
+                                <input type="text" id="multicol-last-name" name='last_name' class="form-control @error('last_name') is-invalid @enderror" placeholder="Doe" />
                                 </div>
                                 <div class="col-md-6">
                                 <label class="form-label" for="multicol-email">Email</label>
@@ -41,21 +44,23 @@
                                     <input
                                     type="text"
                                     id="multicol-email"
-                                    class="form-control"
+                                    class="form-control @error('email') is-invalid @enderror"
+                                    name='email'
                                     placeholder="john.doe"
                                     aria-label="john.doe"
                                     aria-describedby="multicol-email2" />
                                     <span class="input-group-text" id="multicol-email2">@example.com</span>
                                 </div>
                                 </div>
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                 <div class="form-password-toggle">
                                     <label class="form-label" for="multicol-password">Password</label>
                                     <div class="input-group input-group-merge">
                                     <input
                                         type="password"
                                         id="multicol-password"
-                                        class="form-control"
+                                        class="form-control @error('password') is-invalid @enderror"
+                                        name='password'
                                         placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                         aria-describedby="multicol-password2" />
                                     <span class="input-group-text cursor-pointer" id="multicol-password2"
@@ -72,6 +77,7 @@
                                         type="password"
                                         id="multicol-confirm-password"
                                         class="form-control"
+                                        name='password_confirmation'
                                         placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                         aria-describedby="multicol-confirm-password2" />
                                     <span class="input-group-text cursor-pointer" id="multicol-confirm-password2"
@@ -79,7 +85,7 @@
                                     ></span>
                                     </div>
                                 </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                       </div>
@@ -105,8 +111,8 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="department">Department</label>
-                                        <select id="department" name='department' class="select form-select">
-                                            <option selected>Select Department</option>
+                                        <select id="department" name='department' class="select form-select @error('department') is-invalid @enderror">
+                                            <option>Select Department</option>
                                             @foreach($departments as $department)
                                             <option value="{{ $department->id }}">{{ $department->name }}</option>
                                             @endforeach
@@ -114,17 +120,17 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="role">Role</label>
-                                        <select id="role" name='role' class="select form-select">
-                                            <option selected>Select Role</option>
+                                        <select id="role" name='role' class="select form-select @error('role') is-invalid @enderror">
+                                            <option>Select Role</option>
                                             @foreach($roles as $role)
                                             <option value="{{ $role->id }}">{{ $role->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label" for="role">Employee Type</label>
-                                        <select id="role" name='role' class="select form-select">
-                                            <option selected>Select Employee Type</option>
+                                        <label class="form-label" for="employee_type">Employee Type</label>
+                                        <select id="employee_type" name='employee_type' class="select form-select @error('employee_type') is-invalid @enderror">
+                                            <option>Select Employee Type</option>
                                             @foreach($employmentTypes as $employmentType)
                                             <option value="{{ $employmentType->id }}">{{ $employmentType->name }}</option>
                                             @endforeach
@@ -132,8 +138,8 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="designation">Designation</label>
-                                        <select id="designation" name='designation' class="select form-select">
-                                            <option selected>Select Designation</option>
+                                        <select id="designation" name='designation' class="select form-select @error('designation') is-invalid @enderror">
+                                            <option>Select Designation</option>
                                             @foreach($designations as $designations)
                                             <option value="{{ $designations->id }}">{{ $designations->name }}</option>
                                             @endforeach
@@ -141,8 +147,8 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="shift_type">Shift Type</label>
-                                        <select id="shift_type" name='shift_type' class="select form-select">
-                                            <option selected>Select Shift Type</option>
+                                        <select id="shift_type" name='shift_type' class="select form-select @error('shift_type') is-invalid @enderror">
+                                            <option>Select Shift Type</option>
                                             @foreach($shiftTypes as $shiftType)
                                             <option value="{{ $shiftType->id }}">{{ $shiftType->name }}</option>
                                             @endforeach
@@ -150,44 +156,48 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="employee_status">Employee Status</label>
-                                        <select id="employee_status" name='employee_status' class="select form-select">
-                                            <option value="seo" selected>SEO</option>
-                                            <option value="sales">Sales</option>
+                                        <select id="employee_status" name='employee_status' class="select form-select @error('eployee_status') is-invalid @enderror">
+                                            <option>Select Employee Status</option>
+                                                @foreach($employeeStatuses as $status)
+                                                <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                                @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label" for="multicol-last-name">Salary In PKR</label>
-                                        <input type="text" id="salary_pkr" name='salary_pkr' class="form-control" placeholder="500" />
+                                        <label class="form-label" for="salary_pkr">Salary In PKR</label>
+                                        <input type="text" id="salary_pkr" name='salary_pkr' class="form-control @error('salary_pkr') is-invalid @enderror" placeholder="500" />
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label" for="multicol-last-name">Salary In USD</label>
-                                        <input type="text" id="salary_pkr" name='salary_usd' class="form-control" placeholder="500" />
+                                        <label class="form-label" for="salary_usd">Salary In USD</label>
+                                        <input type="text" id="salary_usd" name='salary_usd' class="form-control @error('salary_usd') is-invalid @enderror" placeholder="500" />
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="source_of_hire">Source of Hire</label>
-                                        <select id="source_of_hire" name='source_of_hire' class="select form-select">
+                                        <select id="source_of_hire" name='source_of_hire' class="select form-select @error('source_of_hire') is-invalid @enderror">
                                             <option value="seo" selected>SEO</option>
                                             <option value="sales">Sales</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label" for="multicol-birthdate">Date of Joining</label>
-                                        <input type="date" class="form-control" placeholder="YYYY-MM-DD" />
+                                        <label class="form-label" for="joining_date">Date of Joining</label>
+                                        <input type="date" name='joining_date' id='joining_date' class="form-control @error('joining_date') is-invalid @enderror" placeholder="YYYY-MM-DD" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label" for="multicol-birthdate">Date of Regularisation</label>
-                                        <input type="date" class="form-control" placeholder="YYYY-MM-DD" />
+                                        <label class="form-label" for="regularisation_date">Date of Regularisation</label>
+                                        <input type="date" name='regularisation_date' id='regularisation_date' class="form-control" placeholder="YYYY-MM-DD" />
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label" for="source_of_hire">Current Expertise</label>
-                                        <select id="source_of_hire" name='source_of_hire' class="select form-select">
-                                            <option value="seo" selected>SEO</option>
-                                            <option value="sales">Sales</option>
+                                        <label class="form-label" for="current_expertise">Current Expertise</label>
+                                        <select id="current_expertise" name='current_expertise' class="select form-select">
+                                            <option>Select Expertise</option>
+                                            @foreach($expertises as $expertise)
+                                            <option value="{{ $expertise->id }}">{{ $expertise->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" for="multicol-birthdate">Break Allowed(Hrs)</label>
-                                        <input type="number" class="form-control" placeholder="00" />
+                                        <input type="number" name='breaks' class="form-control" placeholder="00" />
                                     </div>
                                 </div>
                           </div>
@@ -214,10 +224,12 @@
                         <div class="accordion-body">
                             <div class="row g-6">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label" for="source_of_hire">Reporting Manager</label>
-                                        <select id="source_of_hire" name='source_of_hire' class="select form-select">
-                                            <option value="seo" selected>SEO</option>
-                                            <option value="sales">Sales</option>
+                                        <label class="form-label" for="reporting_manager">Reporting Manager</label>
+                                        <select id="reporting_manager" name='reporting_manager' class="select form-select">
+                                            <option>Select Reporting Manager</option>
+                                            @foreach($reportingManagers as $manager)
+                                             <option value='{{ $manager->id }}'>{{$manager->name}}</option>
+                                             @endforeach
                                         </select>
                                     </div>
                             </div>
@@ -243,10 +255,19 @@
                         data-bs-parent="#collapsibleSection">
                                 <div class="accordion-body">
                                     <div class="row g-6">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label" for="gender">Gender</label>
+                                            <select id="gender" name='gender' class="select form-select">
+                                                <option disabled>Select Gender</option>
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
                                         <div class="col-md-6">
-                                        <label class="form-label" for="marital-status">Marital Status</label>
-                                        <select id="marital-status" name='marital-status' class="select form-select">
-                                            <option value="single" selected>Single</option>
+                                        <label class="form-label" for="marital_status">Marital Status</label>
+                                        <select id="marital_status" name='marital_status' class="select form-select">
+                                            <option value="single">Single</option>
                                             <option value="married">Married</option>
                                         </select>
                                         </div>
@@ -255,14 +276,16 @@
                                             <input
                                                 type="number"
                                                 class="form-control"
-                                                placeholder="20" />
+                                                placeholder="20"
+                                                name='age' />
                                         </div>
                                         <div class="col-md-6">
                                         <label class="form-label" for="multicol-birthdate">Birth Date</label>
                                         <input
                                             type="date"
                                             class="form-control"
-                                            placeholder="YYYY-MM-DD" />
+                                            placeholder="YYYY-MM-DD"
+                                            name='birth_date' />
                                         </div>
                                         <div class="col-md-12">
                                             <label class='form-label' for="">About Me Notes</label>
@@ -270,6 +293,7 @@
                                                 class="form-control"
                                                 id="collapsible-notes"
                                                 rows="2"
+                                                name='notes'
                                                 placeholder="write additional notes"></textarea>
                                         </div>
                                     </div>
@@ -298,12 +322,10 @@
                                     <div class="row g-6">
                                        
                                         <div class="col-12">
-                                            <form action="/upload" class="dropzone needsclick" id="dropzone-multi">
+                                            <form action="/upload" class="dropzone needsclick dz-clickable" id="dropzone-multi">
                                                 <div class="dz-message needsclick">
                                                 Drop files here or click to upload
-                                                <span class="note needsclick"
-                                                    >you can add multiple documents here.</span
-                                                >
+                                                <span class="note needsclick">you can add multiple documents here.</span>
                                                 </div>
                                                 <div class="fallback">
                                                 <input name="file" type="file" />
@@ -322,6 +344,7 @@
                   </div>
                 </div>
               </div>
+    </form>
 </div>
 
 
