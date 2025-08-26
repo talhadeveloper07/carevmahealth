@@ -16,11 +16,14 @@
                             </ul>
                         </div>
                     @endif
-        <form action="{{ route('insert.employee') }}" method="POST" enctype="multipart/form-data">
+
+        <form action="{{ route('update.employee', $employee->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('PUT')   
+            <input type="hidden" name='employee_id' value='{{ $employee->id }}'>
             <div class="row my-6">
                 <div class="col">
-                  <h4>Add New Employee</h4>
+                  <h4>{{ $employee->first_name }}'s Profile</h4>
                   <div class="accordion" id="collapsibleSection">
                     <div class="card accordion-item active">
                       <h2 class="accordion-header" id="headingBasicInformation">
@@ -42,11 +45,11 @@
                         <div class="row g-6">
                                 <div class="col-md-6">
                                 <label class="form-label" for="multicol-first-name">First Name</label>
-                                <input type="text" id="multicol-first-name" name='first_name' class="form-control @error('first_name') is-invalid @enderror" placeholder="John" />
+                                <input type="text" id="multicol-first-name" value='{{ $employee->first_name }}' name='first_name' class="form-control @error('first_name') is-invalid @enderror" placeholder="John" />
                                 </div>
                                 <div class="col-md-6">
                                 <label class="form-label" for="multicol-last-name">Last Name</label>
-                                <input type="text" id="multicol-last-name" name='last_name' class="form-control @error('last_name') is-invalid @enderror" placeholder="Doe" />
+                                <input type="text" id="multicol-last-name" value='{{ $employee->last_name }}' name='last_name' class="form-control @error('last_name') is-invalid @enderror" placeholder="Doe" />
                                 </div>
                                 <div class="col-md-6">
                                 <label class="form-label" for="multicol-email">Email</label>
@@ -56,6 +59,7 @@
                                     id="multicol-email"
                                     class="form-control @error('email') is-invalid @enderror"
                                     name='email'
+                                    value='{{ $employee->email }}'
                                     placeholder="john.doe"
                                     aria-label="john.doe"
                                     aria-describedby="multicol-email2" />
@@ -124,7 +128,7 @@
                                         <select id="department" name='department' class="select form-select @error('department') is-invalid @enderror">
                                             <option>Select Department</option>
                                             @foreach($departments as $department)
-                                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                            <option value="{{ $department->id }}" {{ old('department', $employee->department_id) == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -133,7 +137,7 @@
                                         <select id="role" name='role' class="select form-select @error('role') is-invalid @enderror">
                                             <option>Select Role</option>
                                             @foreach($roles as $role)
-                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                            <option value="{{ $role->id }}" {{ old('role', $employee->role_id) == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -142,7 +146,7 @@
                                         <select id="employee_type" name='employee_type' class="select form-select @error('employee_type') is-invalid @enderror">
                                             <option>Select Employee Type</option>
                                             @foreach($employmentTypes as $employmentType)
-                                            <option value="{{ $employmentType->id }}">{{ $employmentType->name }}</option>
+                                            <option value="{{ $employmentType->id }}"  {{ old('employee_type', $employee->employment_type_id) == $employmentType->id ? 'selected' : '' }}>{{ $employmentType->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -151,7 +155,7 @@
                                         <select id="designation" name='designation' class="select form-select @error('designation') is-invalid @enderror">
                                             <option>Select Designation</option>
                                             @foreach($designations as $designations)
-                                            <option value="{{ $designations->id }}">{{ $designations->name }}</option>
+                                            <option value="{{ $designations->id }}" {{ old('designation', $employee->designation_id) == $designations->id ? 'selected' : '' }}>{{ $designations->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -160,26 +164,26 @@
                                         <select id="shift_type" name='shift_type' class="select form-select @error('shift_type') is-invalid @enderror">
                                             <option>Select Shift Type</option>
                                             @foreach($shiftTypes as $shiftType)
-                                            <option value="{{ $shiftType->id }}">{{ $shiftType->name }}</option>
+                                            <option value="{{ $shiftType->id }}" {{ old('shift_type', $employee->shift_type_id) == $shiftType->id ? 'selected' : '' }}>{{ $shiftType->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="employee_status">Employee Status</label>
                                         <select id="employee_status" name='employee_status' class="select form-select @error('eployee_status') is-invalid @enderror">
-                                            <option>Select Employee Status</option>
+                                            <option disabled>Select Employee Status</option>
                                                 @foreach($employeeStatuses as $status)
-                                                <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                                <option value="{{ $status->id }}" {{ old('employee_status', $employee->employee_status_id) == $status->id ? 'selected' : '' }}>{{ $status->name }}</option>
                                                 @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="salary_pkr">Salary In PKR</label>
-                                        <input type="text" id="salary_pkr" name='salary_pkr' class="form-control @error('salary_pkr') is-invalid @enderror" placeholder="500" />
+                                        <input type="text" id="salary_pkr" value='{{ $employee->salary_pkr }}' name='salary_pkr' class="form-control @error('salary_pkr') is-invalid @enderror" placeholder="500" />
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="salary_usd">Salary In USD</label>
-                                        <input type="text" id="salary_usd" name='salary_usd' class="form-control @error('salary_usd') is-invalid @enderror" placeholder="500" />
+                                        <input type="text" value='{{ $employee->salary_usd }}' id="salary_usd" name='salary_usd' class="form-control @error('salary_usd') is-invalid @enderror" placeholder="500" />
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="source_of_hire">Source of Hire</label>
@@ -190,24 +194,25 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" for="joining_date">Date of Joining</label>
-                                        <input type="date" name='joining_date' id='joining_date' class="form-control @error('joining_date') is-invalid @enderror" placeholder="YYYY-MM-DD" />
+                                        <input type="date" value='{{ $employee->date_of_joining }}' name='joining_date' id='joining_date' class="form-control @error('joining_date') is-invalid @enderror" placeholder="YYYY-MM-DD" />
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" for="regularisation_date">Date of Regularisation</label>
-                                        <input type="date" name='regularisation_date' id='regularisation_date' class="form-control" placeholder="YYYY-MM-DD" />
+                                        <input type="date" value='{{ $employee->date_of_regularisation }}' name='regularisation_date' id='regularisation_date' class="form-control" placeholder="YYYY-MM-DD" />
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="current_expertise">Current Expertise</label>
                                         <select id="current_expertise" name='current_expertise' class="select form-select">
-                                            <option>Select Expertise</option>
+                                            <option disabled>Select Expertise</option>
                                             @foreach($expertises as $expertise)
-                                            <option value="{{ $expertise->id }}">{{ $expertise->name }}</option>
+                                            <option value="{{ $expertise->id }}" {{ old('current_expertise', $employee->expertise_id ) == $expertise->id ? 'selected' : '' }}>{{ $expertise->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" for="multicol-birthdate">Break Allowed(Hrs)</label>
-                                        <input type="number" name="breaks" class="form-control" placeholder="0.00" step="0.01" min="0" />
+                                        <input type="number" name="breaks" class="form-control" value='{{ $employee->break_allowed_hours }}' placeholder="0.00" step="0.01" min="0" />
+
                                     </div>
                                 </div>
                           </div>
@@ -236,9 +241,9 @@
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label" for="reporting_manager">Reporting Manager</label>
                                         <select id="reporting_manager" name='reporting_manager' class="select form-select">
-                                            <option>Select Reporting Manager</option>
+                                            <option disabled>Select Reporting Manager</option>
                                             @foreach($reportingManagers as $manager)
-                                             <option value='{{ $manager->id }}'>{{$manager->name}}</option>
+                                             <option value='{{ $manager->id }}' {{ old('reporting_manager', $employee->reporting_manager_id ) == $manager->id ? 'selected' : '' }}>{{$manager->name}}</option>
                                              @endforeach
                                         </select>
                                     </div>
@@ -287,6 +292,7 @@
                                                 type="number"
                                                 class="form-control"
                                                 placeholder="20"
+                                                value='{{ $employee->age }}'
                                                 name='age' />
                                         </div>
                                         <div class="col-md-6">
@@ -295,16 +301,18 @@
                                             type="date"
                                             class="form-control"
                                             placeholder="YYYY-MM-DD"
-                                            name='birth_date' />
+                                            name='birth_date'
+                                            value='{{ $employee->date_of_birth }}'
+                                             />
                                         </div>
                                         <div class="col-md-12">
                                             <label class='form-label' for="">About Me Notes</label>
-                                            <textarea name="collapsible-notes"
+                                            <textarea
                                                 class="form-control"
                                                 id="collapsible-notes"
                                                 rows="2"
                                                 name='notes'
-                                                placeholder="write additional notes"></textarea>
+                                                placeholder="write additional notes">{{ $employee->about_me_notes }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -341,6 +349,41 @@
                                                 <input name="file" type="file" />
                                                 </div>
                                             </form>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="card accordion-item">
+                      <h2 class="accordion-header" id="headingTimezone">
+                        <button
+                          type="button"
+                          class="accordion-button collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#collapseTimezone"
+                          aria-expanded="false"
+                          aria-controls="collapseTimezone">
+                          Timezone
+                        </button>
+                      </h2>
+                      <div
+                        id="collapseTimezone"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="headingTimezone"
+                        data-bs-parent="#collapsibleSection">
+                                <div class="accordion-body">
+                                    <div class="row g-6">
+                                       
+                                        <div class="col-12">
+                                            <label for="timezone" class="form-label">Change Timezone</label>
+                                            <select name="timezone" id="timezone" class="form-control">
+                                                @foreach(timezone_identifiers_list() as $tz)
+                                                    <option value="{{ $tz }}" {{ old('timezone', $employee->timezone) == $tz ? 'selected' : '' }}>
+                                                        {{ $tz }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                         <div class="mt-4">
                                             <button type="submit" class="btn btn-primary me-4">Submit</button>

@@ -18,8 +18,12 @@
               <p class="mb-6">
                 <span class="fw-medium">Your new password must be different from previously used passwords</span>
             </p>
-            <form id="formAuthentication" action="{{ url('/complete-profile/'.$employee->id) }}" method="POST">
+            <form id="formAuthentication" action="{{ $temporaryUrl  }}" method="POST">
     @csrf
+
+    <input type="hidden" name="employee_id" value="{{ $employee->id }}">
+    <input type="hidden" name="signature" value="{{ request()->signature }}">
+            <input type="hidden" name="expires" value="{{ request()->expires }}">
 
     {{-- Password --}}
     <div class="mb-6 form-password-toggle form-control-validation">
@@ -33,6 +37,7 @@
                 placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                 aria-describedby="password" />
             <span class="input-group-text cursor-pointer"><i class="icon-base ti tabler-eye-off"></i></span>
+           
         </div>
         @error('password')
             <div class="text-danger mt-1 small">{{ $message }}</div>
@@ -53,38 +58,6 @@
             <span class="input-group-text cursor-pointer"><i class="icon-base ti tabler-eye-off"></i></span>
         </div>
         @error('password_confirmation')
-            <div class="text-danger mt-1 small">{{ $message }}</div>
-        @enderror
-    </div>
-
-    {{-- Gender --}}
-    <div class="mb-3">
-        <label>Gender</label>
-        <select name="gender" class="form-select @error('gender') is-invalid @enderror" required>
-            <option value="" disabled {{ old('gender') ? '' : 'selected' }}>Select</option>
-            <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
-            <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
-            <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Other</option>
-        </select>
-        @error('gender')
-            <div class="text-danger mt-1 small">{{ $message }}</div>
-        @enderror
-    </div>
-
-    {{-- Date of Birth --}}
-    <div class="mb-3">
-        <label>Date of Birth</label>
-        <input type="date" name="date_of_birth" value="{{ old('date_of_birth') }}" class="form-control @error('date_of_birth') is-invalid @enderror" required>
-        @error('date_of_birth')
-            <div class="text-danger mt-1 small">{{ $message }}</div>
-        @enderror
-    </div>
-
-    {{-- About Me --}}
-    <div class="mb-3">
-        <label>About Me</label>
-        <textarea name="about_me_notes" class="form-control @error('about_me_notes') is-invalid @enderror">{{ old('about_me_notes') }}</textarea>
-        @error('about_me_notes')
             <div class="text-danger mt-1 small">{{ $message }}</div>
         @enderror
     </div>

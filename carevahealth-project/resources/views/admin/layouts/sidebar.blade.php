@@ -68,6 +68,11 @@
               </a>
               <ul class="menu-sub">
                     <li class="menu-item">
+                      <a href="{{ route('all.employees') }}" class="menu-link">
+                        <div data-i18n="All Employees">All Employees</div>
+                      </a>
+                    </li>
+                    <li class="menu-item">
                       <a href="{{ route('add.employee') }}" class="menu-link">
                         <div data-i18n="Add New Employee">Add New Employee</div>
                       </a>
@@ -76,16 +81,9 @@
             </li>
 
             <li class="menu-item">
-              <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-users-group"></i>
-                <div data-i18n="Customers">Customers</div>
-              </a>
-            </li>
-
-            <li class="menu-item">
-              <a href="#" class="menu-link">
+              <a href="{{ route('admin.attendance') }}" class="menu-link">
                 <i class="menu-icon icon-base ti tabler-calendar-week"></i>
-                <div data-i18n="Calendar">Calendar</div>
+                <div data-i18n="Attendance">Attendance</div>
               </a>
             </li>
 

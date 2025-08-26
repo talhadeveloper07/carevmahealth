@@ -21,6 +21,7 @@ use App\Mail\CompleteProfileMail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
+use DataTables;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -50,34 +51,25 @@ class EmployeeController extends Controller
         ));
     }
 
-public function insert_employee(Request $request)
-{
-    $request->validate([
-        'first_name'        => 'required|string|max:100',
-        'last_name'         => 'required|string|max:100',
-        'email'             => 'required|email|unique:employees,email',
-        'department'        => 'required|integer',
-        'role'              => 'required|integer',
-        'employee_type'     => 'required|integer',
-        'designation'       => 'required|integer',
-        'shift_type'        => 'required|integer',
-        'salary_pkr'        => 'nullable|numeric',
-        'salary_usd'        => 'nullable|numeric',
-        'joining_date'      => 'nullable|date',
-        'regularisation_date'=> 'nullable|date',
-        'birth_date'        => 'nullable|date',
-        'age'               => 'nullable|integer',
-        'gender'            => 'nullable|string',
-        'marital_status'    => 'nullable|string',
-        'notes'             => 'nullable|string',
-        'employee_image'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'documents.*'       => 'nullable|file|max:5120',
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-        // ✅ Save employee
+    public function insert_employee(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email' => 'required|email|unique:employees,email',
+            'department' => 'required|integer',
+            'role' => 'required|integer',
+            'employee_type' => 'required|integer',
+            'designation' => 'required|integer',
+            'shift_type' => 'required|integer',
+            'employee_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'documents.*' => 'nullable|file|max:5120',
+            'breaks' => 'required',
+        ]);
+    
+        DB::beginTransaction();
+    
+        // Remove try/catch temporarily
         $employee = new Employee();
         $employee->first_name = $request->first_name;
         $employee->last_name = $request->last_name;
@@ -88,77 +80,54 @@ public function insert_employee(Request $request)
         $employee->employment_type_id = $request->employee_type;
         $employee->designation_id = $request->designation;
         $employee->shift_type_id = $request->shift_type;
-        $employee->employee_status_id = $request->employee_status;
         $employee->salary_pkr = $request->salary_pkr;
         $employee->salary_usd = $request->salary_usd;
-        $employee->source_of_hire = $request->source_of_hire;
         $employee->date_of_joining = $request->joining_date;
-        $employee->date_of_regularisation = $request->regularisation_date;
-        $employee->expertise_id = $request->current_expertise;
         $employee->break_allowed_hours = $request->breaks;
-        $employee->reporting_manager_id = $request->reporting_manager;
-        $employee->gender = $request->gender;
-        $employee->marital_status = $request->marital_status;
-        $employee->age = $request->age;
-        $employee->date_of_birth = $request->birth_date;
-        $employee->about_me_notes = $request->notes;
-
-        // ✅ Upload profile image
+        $employee->date_of_regularisation = $request->regularisation_date;
+    
         if ($request->hasFile('employee_image')) {
-            $path = $request->file('employee_image')->store('employees/images', 'public');
-            $employee->employee_image = $path;
+            $employee->employee_image = $request->file('employee_image')->store('employees/images', 'public');
         }
-
+    
         $user = User::create([
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
             'password' => Hash::make(Str::random(12)),
         ]);
-
+    
         $employee->user_id = $user->id;
         $employee->save();
-
-        // ✅ Upload documents (Dropzone)
+    
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $file) {
-                $path = $file->store('employees/documents', 'public');
-
                 $employee->documents()->create([
-                    'file_path' => $path,
+                    'file_path' => $file->store('employees/documents', 'public'),
                 ]);
             }
         }
-        
+    
+        $token = Str::random(64);
+    
         $temporaryUrl = URL::temporarySignedRoute(
             'employee.completeProfile',
-            now()->addHours(24), // 24 hours expiry
+            now()->addMinutes(5),
             ['email' => $user->email, 'token' => $token]
         );
-
-        $token = Str::random(64);
-
+    
         DB::table('password_reset_tokens')->insert([
             'email' => $user->email,
             'token' => Hash::make($token),
             'created_at' => now(),
         ]);
-
+    
         Mail::to($user->email)->send(new CompleteProfileMail($employee, $temporaryUrl));
-
+    
         DB::commit();
-
+    
         return redirect()->back()->with('success', 'Employee added successfully!');
-    } catch (\Exception $e) {
-        DB::rollBack();
-
-        // Log error for debugging
-        Log::error('Employee Insert Error: ' . $e->getMessage(), [
-            'trace' => $e->getTraceAsString()
-        ]);
-
-        return redirect()->back()->with('error', 'Something went wrong! Please try again.');
     }
-}
+    
 
 
     public function showCompleteProfileForm(Request $request)
@@ -178,17 +147,23 @@ public function insert_employee(Request $request)
         }
 
         $employee = Employee::where('email', $email)->firstOrFail();
+        $temporaryUrl = $request->fullUrl();
 
-        return view('complete_profile.index', compact('employee'));
+        return view('complete_profile.index', compact(['employee','temporaryUrl']));
     }
 
-    public function submitCompleteProfile(Request $request, Employee $employee)
+    public function submitCompleteProfile(Request $request)
     {
+         
+        if (! $request->hasValidSignature()) {
+            abort(403, 'Invalid or expired link.');
+        }
+
         $request->validate([
             'password' => 'required|confirmed|min:8',
-            'gender' => 'required',
-            'date_of_birth' => 'required|date',
         ]);
+
+        $employee = Employee::where('id', $request->employee_id)->first();
 
         // Update user password
         $user = $employee->user;
@@ -197,12 +172,126 @@ public function insert_employee(Request $request)
 
         // Update employee profile
         $employee->update([
-            'gender' => $request->gender,
-            'date_of_birth' => $request->date_of_birth,
-            'marital_status' => $request->marital_status,
-            'about_me_notes' => $request->about_me_notes,
+            'password' => Hash::make($request->password),
         ]);
 
         return redirect()->route('login')->with('success', 'Profile completed successfully. You can now login.');
     }
+
+    public function all_employees(Request $request)
+    {
+        if ($request->ajax()) {
+            $employees = Employee::with([
+                'department',
+                'role',
+                'designation',
+                'reportingManager',
+                'shiftType',
+                'employeeStatus',
+                'expertise'
+            ]);
+    
+            // Apply status filter
+            if ($request->status) {
+                $employees->where('employee_status_id', $request->status);
+            }
+    
+            return DataTables::of($employees->get())
+                ->addColumn('full_name', fn($e) => $e->first_name . ' ' . $e->last_name)
+                ->addColumn('department', fn($e) => $e->department->name ?? '-')
+                ->addColumn('role', fn($e) => $e->role->name ?? '-')
+                ->addColumn('designation', fn($e) => $e->designation->name ?? '-')
+                ->addColumn('reporting_manager', fn($e) => $e->reportingManager->name ?? '-')
+                ->addColumn('shift_type', fn($e) => $e->shiftType->name ?? '-')
+                ->addColumn('status', fn($e) => $e->employeeStatus->name ?? '-')
+                ->addColumn('expertise', fn($e) => $e->expertise->name ?? '-')
+                ->addColumn('actions', fn($e) => '<a href="'. route('edit.employee', $e->id) .'" class="btn btn-sm btn-primary">Edit</a>')
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+
+        $statuses = EmployeeStatus::all();
+    
+        return view('admin.employee.index',compact('statuses'));
+    }
+
+    public function edit_employee($id)
+    {
+        $employee = Employee::findOrFail($id);
+
+        return view('admin.employee.edit', [
+            'employee' => $employee,
+            'departments' => Department::all(),
+            'roles' => Role::all(),
+            'employmentTypes' => EmploymentType::all(),
+            'designations' => Designation::all(),
+            'shiftTypes' => ShiftType::all(),
+            'employeeStatuses' => EmployeeStatus::all(),
+            'expertises' => Expertise::all(),
+            'reportingManagers' => ReportingManager::all(),
+        ]);
+    }
+
+    public function update_employee(Request $request)
+    {
+    $request->validate([
+        'first_name' => 'required|string|max:255',
+        'last_name'  => 'required|string|max:255',
+        'email'      => 'required|email|unique:employees,email,' . $request->employee_id,
+        'department' => 'required|exists:departments,id',
+        'role'       => 'required|exists:roles,id',
+        'designation'=> 'required|exists:designations,id',
+        'employee_type' => 'required|exists:employment_types,id',
+        'shift_type'    => 'required|exists:shift_types,id',
+        'employee_status' => 'required|exists:employee_statuses,id',
+        'joining_date'   => 'required|date',
+        'timezone' => 'nullable'
+        // Add other validation rules as needed
+    ]);
+
+    // Find the employee
+    $employee = Employee::findOrFail($request->id);
+
+    // Update employee data
+    $employee->update([
+        'first_name' => $request->first_name,
+        'last_name'  => $request->last_name,
+        'email'      => $request->email,
+        'department_id' => $request->department,
+        'role_id'       => $request->role,
+        'designation_id'=> $request->designation,
+        'employment_type_id' => $request->employee_type,
+        'shift_type_id' => $request->shift_type,
+        'employee_status_id' => $request->employee_status,
+        'salary_pkr'  => $request->salary_pkr,
+        'salary_usd'  => $request->salary_usd,
+        'source_of_hire' => $request->source_of_hire,
+        'date_of_joining' => $request->joining_date,
+        'date_of_regularisation' => $request->regularisation_date,
+        'expertise_id' => $request->current_expertise,
+        'reporting_manager_id' => $request->reporting_manager,
+        'gender' => $request->gender,
+        'marital_status' => $request->marital_status,
+        'age' => $request->age,
+        'date_of_birth' => $request->birth_date,
+        'about_me_notes' => $request->notes,
+        'break_allowed_hours' => $request->breaks,
+        'timezone' => $request->timezone ?? null,
+
+        // Add other fields as needed
+    ]);
+
+    // Handle file uploads if needed (documents, profile picture)
+    // Example:
+    // if ($request->hasFile('profile_picture')) {
+    //     $file = $request->file('profile_picture');
+    //     $path = $file->store('employees', 'public');
+    //     $employee->profile_picture = $path;
+    //     $employee->save();
+    // }
+
+    return redirect()->route('edit.employee', $employee->id)
+                     ->with('success', 'Employee updated successfully.');
+    }
+
 }

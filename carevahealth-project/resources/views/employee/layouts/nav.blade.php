@@ -19,9 +19,15 @@
 
               <ul class="navbar-nav flex-row align-items-center ms-md-auto">
                
-                <li>
-                  <span id="live-datetime" class="badge bg-info"></span>
-                </li>
+              @php
+                  use Illuminate\Support\Facades\Auth;
+                  $employee = \App\Models\Employee::where('user_id', Auth::id())->first();
+                  $timezone = $employee->timezone ?? config('app.timezone'); // fallback if not set
+              @endphp
+
+              <li>
+                <span id="live-datetime" class="badge bg-info"></span>
+              </li>
                 <!-- Quick links  -->
                 <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown">
                   <a
@@ -376,7 +382,7 @@
                     href="javascript:void(0);"
                     data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                      <img src="/assets/img/avatars/1.png" alt class="rounded-circle" />
+                      <img src="{{ $employee->profile_picture ? asset('storage/' . $employee->profile_picture) : asset('assets/img/avatars/1.png') }}" alt style='object-fit:cover;' class="rounded-circle" />
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -385,12 +391,12 @@
                         <div class="d-flex align-items-center">
                           <div class="flex-shrink-0 me-2">
                             <div class="avatar avatar-online">
-                              <img src="/assets/img/avatars/1.png" alt class="rounded-circle" />
+                              <img src="{{ $employee->profile_picture ? asset('storage/' . $employee->profile_picture) : asset('assets/img/avatars/1.png') }}" alt style='object-fit:cover;' alt class="rounded-circle" />
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <h6 class="mb-0">John Doe</h6>
-                            <small class="text-body-secondary">Admin</small>
+                            <h6 class="mb-0">{{$employee->user->name}}</h6>
+                            <small class="text-body-secondary">{{$employee->role->name}}</small>
                           </div>
                         </div>
                       </a>
@@ -458,11 +464,12 @@
             </div>
           </nav>
 
-          <script>
+<script>
     function updateDateTime() {
+        const tz = "{{ $timezone }}"; // employee's timezone from DB
         const now = new Date();
 
-        // Format date and time
+        // Format with timezone
         const options = {
             weekday: 'short', 
             year: 'numeric', 
@@ -471,15 +478,13 @@
             hour: '2-digit', 
             minute: '2-digit', 
             second: '2-digit',
+            timeZone: tz
         };
 
         document.getElementById('live-datetime').textContent = 
             now.toLocaleString('en-US', options);
     }
 
-    // Update immediately
     updateDateTime();
-
-    // Update every second
     setInterval(updateDateTime, 1000);
 </script>

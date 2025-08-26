@@ -70,7 +70,7 @@
         <!-- Header -->
         <div class="header">
             <span class="header-icon">👤</span>
-            Create Your Account
+            Set Your Password
         </div>
 
         <!-- Content -->
@@ -81,7 +81,7 @@
 
             <p><strong>Note:</strong> For security reasons, this link will expire after 24 hours. If it’s already expired, you can request a new one.</p>
 
-            <a href="{{ url('/complete-profile/'.$employee->id) }}" class="btn">Choose Your Password</a>
+            <a href="{{ $temporaryUrl }}" class="btn">Choose Your Password</a>
 
             <p>Thank you!<br>Care VMA Team</p>
         </div>
@@ -89,7 +89,7 @@
         <!-- Footer -->
         <div class="footer">
             <p>If the button above doesn’t work, copy and paste this link into your browser:</p>
-            <p><a href="{{ url('/complete-profile/'.$employee->id) }}">{{ url('/complete-profile/'.$employee->id) }}</a></p>
+            <p><a href="{{ $temporaryUrl }}">{{ $temporaryUrl }}</a></p>
             <p><a href="{{ url('/request-new-link') }}">Request a new link</a></p>
         </div>
     </div>

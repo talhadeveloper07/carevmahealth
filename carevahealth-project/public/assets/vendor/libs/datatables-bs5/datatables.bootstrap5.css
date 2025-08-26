@@ -768,7 +768,7 @@ table.dataTable thead th:first-child,
 table.dataTable thead td:first-child,
 table.dataTable tfoot th:first-child,
 table.dataTable tfoot td:first-child {
-  padding-inline: 1.5rem;
+  padding-inline: 2px;
 }
 table.dataTable th:last-child,
 table.dataTable thead th:last-child,
