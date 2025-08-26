@@ -15,9 +15,10 @@ class CompleteProfileMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($employee)
+    public function __construct($employee, $temporaryUrl)
     {
         $this->employee = $employee;
+        $this->temporaryUrl = $temporaryUrl;
     }
 
     /**
@@ -29,6 +30,7 @@ class CompleteProfileMail extends Mailable
                     ->view('emails.complete_profile')
                     ->with([
                         'employee' => $this->employee,
+                        'temporaryUrl' => $this->temporaryUrl,
                     ]);
     }
 

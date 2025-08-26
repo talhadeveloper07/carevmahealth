@@ -31,6 +31,7 @@ class Employee extends Model
         'department_id',
         'role_id',
         'location',
+        'timezone',
         'employment_type_id',
         'shift_type_id',
         'designation_id',
@@ -100,5 +101,17 @@ class Employee extends Model
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($employee) {
+            $lastEmployee = self::orderBy('id', 'desc')->first();
+            $nextNumber = $lastEmployee ? ((int) filter_var($lastEmployee->employee_code, FILTER_SANITIZE_NUMBER_INT)) + 1 : 1;
+
+            $employee->employee_code = 'CVMA' . $nextNumber;
+        });
     }
 }

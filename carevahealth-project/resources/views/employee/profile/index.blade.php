@@ -4,11 +4,26 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row justify-content-center">
+
+            @php
+            use Illuminate\Support\Facades\Auth;
+            $employee = \App\Models\Employee::where('user_id', Auth::id())->first();
+            @endphp
+
+
+
                     @if(session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
         <div class="col-md-12">
-                <form action="{{ route('employee.profile.update') }}" method="POST" enctype="multipart/form-data">
+        @if($employee && !$employee->profile_completed)
+            <div class="alert alert-warning d-flex justify-content-between align-items-center" role="alert" style="z-index: 1050;">
+                <div>
+                    ⚠️ <strong>Complete Your Profile:</strong> You must complete your profile before using the system.
+                </div>
+            </div>
+        @endif
+        <form action="{{ route('employee.profile.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row my-6">
                 <div class="col">
@@ -32,6 +47,22 @@
                         data-bs-parent="#collapsibleSection">
                         <div class="accordion-body">
                         <div class="row g-6">
+                            <div class="d-flex align-items-center gap-3">
+                            <img id="previewImage" src="{{ $employee->profile_picture ? asset('storage/' . $employee->profile_picture) : asset('assets/img/avatars/1.png') }}" alt="" style='border-radius:8px;width:100px;height:100px;object-fit:cover;' class='mb-2'>
+                                    <div class="button-wrapper">
+                                        <label for="upload" class="btn btn-primary me-3 mb-4 waves-effect waves-light" tabindex="0">
+                                            <span class="d-none d-sm-block">Upload new photo</span>
+                                            <i class="icon-base ti tabler-upload d-block d-sm-none"></i>
+                                            <input type="file" name='profile_picture' id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg">
+                                        </label>
+                                        <button type="button" id='resetBtn' class="btn btn-label-secondary account-image-reset mb-4 waves-effect">
+                                            <i class="icon-base ti tabler-reset d-block d-sm-none"></i>
+                                            <span class="d-none d-sm-block">Reset</span>
+                                        </button>
+
+                                        <div>Allowed JPG, GIF or PNG. Max size of 800K</div>
+                                    </div>
+                            </div>
                                 <div class="col-md-6">
                                 <label class="form-label" for="multicol-first-name">First Name</label>
                                 <input type="text" id="multicol-first-name" name='first_name' value='{{ $employee->first_name }}'  class="form-control @error('first_name') is-invalid @enderror" placeholder="John" />
@@ -192,9 +223,9 @@
                                             </form>
                                         </div>
                                         <div class="mt-4">
-                                            <button type="submit" class="btn btn-primary me-4">Submit</button>
-                                            <button type="reset" class="btn btn-label-secondary">Cancel</button>
-                                        </div>
+                <button type="submit" class="btn btn-primary me-4">Submit</button>
+                <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                </div>
                                     </div>
                                 </div>
                         </div>
@@ -203,12 +234,37 @@
                   </div>
                 </div>
               </div>
-    </form>
+               
+            </form>
                 
 
         </div>
     </div>
 </div>
+
+<script>
+    const uploadInput = document.getElementById('upload');
+    const previewImage = document.getElementById('previewImage');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const defaultImage = previewImage.src;
+
+    uploadInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result; // show new image
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    resetBtn.addEventListener('click', function() {
+        previewImage.src = defaultImage; // reset to default
+        uploadInput.value = ""; // clear file input
+    });
+</script>
 @endsection
 
 
