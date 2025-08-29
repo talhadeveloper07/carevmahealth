@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,6 +17,12 @@ class EmployeeMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check() && auth()->user()->role === 'employee') {
+            
+            $user = Auth::user();
+            $user->update([
+                'last_seen_at' => now()
+            ]);      
+
             return $next($request);
         }
     

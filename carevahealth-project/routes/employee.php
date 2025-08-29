@@ -16,7 +16,13 @@ Route::middleware(['auth', 'employee' ,'profile.complete'])->prefix('employee')-
     Route::post('/attendance/start-break', [AttendanceController::class, 'startBreak'])->name('attendance.startBreak');
     Route::post('/attendance/end-break', [AttendanceController::class, 'endBreak'])->name('attendance.endBreak');
 
+    Route::get('/my-attendance',[ProfileController::class,'employee_attendance'])->name('my.attendance'); 
     
+    Route::post('/attendance/request-change', [AttendanceController::class, 'requestChange'])
+    ->name('attendance.requestChange');
+
+    Route::get('settings',[ProfileController::class,'settings'])->name('employee.setting');
+   
 });
 
 Route::prefix('employee/dashboard/profile')->name('employee.profile.')->group(function () {

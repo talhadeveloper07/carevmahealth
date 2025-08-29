@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\CompleteProfileMail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use App\Events\Notifications;
 
 use DataTables;
 use Illuminate\Http\Request;
@@ -120,6 +121,14 @@ class EmployeeController extends Controller
             'token' => Hash::make($token),
             'created_at' => now(),
         ]);
+
+        $name = $employee->first_name.' '.$employee->last_name;
+
+        event(new Notifications([
+            'id' => $employee->id,
+            'name' => $name,
+            'email' => $employee->email
+        ], 'UserRegistered'));
     
         Mail::to($user->email)->send(new CompleteProfileMail($employee, $temporaryUrl));
     
@@ -197,7 +206,33 @@ class EmployeeController extends Controller
             }
     
             return DataTables::of($employees->get())
-                ->addColumn('full_name', fn($e) => $e->first_name . ' ' . $e->last_name)
+                ->addColumn('employee_info', function($e) {
+                    $profilePic = $e->profile_picture 
+                        ? asset('storage/' . $e->profile_picture) 
+                        : asset('assets/img/avatars/1.png'); // fallback if no image
+                    
+                    $fullName = $e->first_name . ' ' . $e->last_name;
+                
+                    // Determine online/offline status
+                    $isOnline = $e->user->last_seen_at && $e->user->last_seen_at->gt(now()->subMinutes(5));
+                    $statusColor = $isOnline ? 'bg-success' : 'bg-secondary';
+                    $statusTitle = $isOnline ? 'Online' : 'Offline';
+
+                    return '
+                        <div class="d-flex align-items-center">
+                            <div class="position-relative me-2">
+                                <img src="' . $profilePic . '" 
+                                    class="rounded-circle" 
+                                    width="40" height="40" 
+                                    style="object-fit:cover;" />
+                                <span class="position-absolute bottom-0 end-0 p-1 rounded-circle ' . $statusColor . '" 
+                                    title="' . $statusTitle . '" 
+                                    style="width:12px; height:12px; border:2px solid #fff;"></span>
+                            </div>
+                            <span>' . e($fullName) . '</span>
+                        </div>
+                    ';
+                })
                 ->addColumn('department', fn($e) => $e->department->name ?? '-')
                 ->addColumn('role', fn($e) => $e->role->name ?? '-')
                 ->addColumn('designation', fn($e) => $e->designation->name ?? '-')
@@ -206,7 +241,7 @@ class EmployeeController extends Controller
                 ->addColumn('status', fn($e) => $e->employeeStatus->name ?? '-')
                 ->addColumn('expertise', fn($e) => $e->expertise->name ?? '-')
                 ->addColumn('actions', fn($e) => '<a href="'. route('edit.employee', $e->id) .'" class="btn btn-sm btn-primary">Edit</a>')
-                ->rawColumns(['actions'])
+                ->rawColumns(['actions','employee_info'])
                 ->make(true);
         }
 
@@ -289,6 +324,12 @@ class EmployeeController extends Controller
     //     $employee->profile_picture = $path;
     //     $employee->save();
     // }
+
+    event(new Notifications([
+        'id' => $employee->id,
+        'name' => $employee->name,
+        'email' => $employee->email
+    ], 'UserRegistered'));
 
     return redirect()->route('edit.employee', $employee->id)
                      ->with('success', 'Employee updated successfully.');

@@ -69,7 +69,7 @@ $(function() {
     columns: [
         { data: 'id', name: 'id' },
         { data: 'employee_code', name: 'employee_code' },
-        { data: 'full_name', name: 'full_name' },
+        { data: 'employee_info', name: 'employee_info' },
         { data: 'email', name: 'email' },
         { data: 'designation', name: 'designation' },
         { data: 'department', name: 'department' },

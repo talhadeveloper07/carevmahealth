@@ -31,6 +31,17 @@
             <h4 class="mb-1">Welcome to Care VMA Health</h4>
             <p class="mb-6">Please sign-in to your account for updates</p>
 
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0 p-0" style='list-style-type:none;'>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+
             <form id="formAuthentication" class="mb-6" method="POST" action="{{ route('login') }}">
                 @csrf
               <div class="mb-6 form-control-validation">
@@ -77,34 +88,18 @@
               <button class="btn btn-primary d-grid w-100" type='submit'>Sign in</button>
             </form>
 
-            <p class="text-center">
-              <span>New on our platform?</span>
-              <a href="{{ route('register') }}">
-                <span>Create an account</span>
-              </a>
-            </p>
-
             <div class="divider my-6">
               <div class="divider-text">or</div>
             </div>
 
-            <div class="d-flex justify-content-center">
-              <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-facebook me-1_5">
-                <i class="icon-base ti tabler-brand-facebook-filled icon-20px"></i>
-              </a>
-
-              <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-twitter me-1_5">
-                <i class="icon-base ti tabler-brand-twitter-filled icon-20px"></i>
-              </a>
-
-              <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-github me-1_5">
-                <i class="icon-base ti tabler-brand-github-filled icon-20px"></i>
-              </a>
-
-              <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-google-plus">
-                <i class="icon-base ti tabler-brand-google-filled icon-20px"></i>
-              </a>
+            <div class="mt-3">
+                <a href="{{ route('google.login') }}" 
+                  class="btn w-100 d-flex align-items-center justify-content-center" style='background:#ededed;border: 1px solid #dddada;'>
+                    <img src="https://img.icons8.com/color/16/000000/google-logo.png" class="me-2"/>
+                    Login with Google
+                </a>
             </div>
+
           </div>
         </div>
         <!-- /Login -->
