@@ -14,7 +14,7 @@
                         <th>Date</th>
                         <th>Clock In</th>
                         <th>Clock Out</th>
-                        <th>Breaks</th>
+                        <!-- <th>Breaks</th> -->
                         <th>Breaks Taken Time</th>
                         <th>Worked Hours</th>
                         <th>Over Time</th>
@@ -39,7 +39,7 @@ $(function () {
             { data: 'clock_in', name: 'clock_in' },
             { data: 'clock_out', name: 'clock_out' },
             { data: 'breaks', name: 'breaks', orderable: false, searchable: false },
-            { data: 'break_taken', name: 'break_taken', orderable: false, searchable: false },
+            // { data: 'break_taken', name: 'break_taken', orderable: false, searchable: false },
             { data: 'worked_hours', name: 'worked_hours', orderable: false, searchable: false },
             { data: 'overtime', name: 'overtime', orderable: false, searchable: false },
         ],

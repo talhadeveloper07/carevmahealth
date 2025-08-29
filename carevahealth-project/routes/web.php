@@ -13,9 +13,15 @@ use App\Http\Controllers\Employee\ReportingManagerController;
 use App\Http\Controllers\Admin\AdminAttendanceController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\OrgGoogleController;
+use App\Http\Controllers\Admin\Client\ServiceController;
+use App\Http\Controllers\Admin\Client\ContractTypeController;
+use App\Http\Controllers\Admin\Client\AdminClientController;
+use App\Http\Controllers\NotificationController;
+
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Auth::routes();
@@ -32,7 +38,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         return view('admin.dashboard.index');
     });
   
-   Route::resource('departments', DepartmentController::class);
+    // Employee Options Routes
+    Route::resource('departments', DepartmentController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('employment-types', EmploymentTypeController::class);
     Route::resource('shift-types', ShiftTypeController::class);
@@ -40,6 +47,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('employee-statuses', EmployeeStatusController::class);
     Route::resource('expertises', ExpertiseController::class);
     Route::resource('reporting-managers', ReportingManagerController::class);
+
+    // Client Options Routes
+    Route::resource('services', ServiceController::class);
+    Route::resource('contracts', ContractTypeController::class);
+
+    // Client Routes
+    Route::get('clients',[AdminClientController::class,'index'])->name('all.clients');
+    Route::get('add-client',[AdminClientController::class,'add_client'])->name('add.client');
+    Route::post('insert-client',[AdminClientController::class,'insert_client'])->name('insert.client');
+
+
 
     // Employee Routes
     Route::get('add-employee',[EmployeeController::class,'add_employee'])->name('add.employee');
@@ -51,6 +69,28 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     
     // Attendance Route
     Route::get('attendance',[AdminAttendanceController::class,'index'])->name('admin.attendance');
+    Route::get('attendance-requests', [AdminAttendanceController::class, 'attendance_changes_requests'])->name('admin.attendance.requests');
+    Route::post('attendance-requests/approve', [AdminAttendanceController::class, 'approve'])->name('approve.attendance.request');
+    Route::post('attendance-requests/reject', [AdminAttendanceController::class, 'reject'])->name('reject.attendance.request');
+
+
+    // Notification Routes
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/all', [NotificationController::class, 'fetchAll'])->name('notifications.all');
+    Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::get('/notifications/count', [NotificationController::class, 'count'])->name('notifications.count');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
+    Route::post('/notifications/read', [NotificationController::class, 'readSingle'])->name('notifications.readSingle');
+
 });
 
 require __DIR__.'/employee.php';
+require __DIR__.'/client.php';
+
+
+// Google Auth Routes
+
+Route::get('/google/connect', [OrgGoogleController::class, 'redirectToGoogle'])->name('google.connect');
+Route::get('/google/callback', [OrgGoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::get('/auth/google/redirect', [OrgGoogleController::class, 'redirectToGoogleLogin'])->name('google.login');
+Route::post('/google/disconnect', [OrgGoogleController::class, 'disconnectGoogle'])->name('google.disconnect')->middleware('auth'); 

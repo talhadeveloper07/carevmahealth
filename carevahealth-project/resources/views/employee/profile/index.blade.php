@@ -223,9 +223,9 @@
                                             </form>
                                         </div>
                                         <div class="mt-4">
-                <button type="submit" class="btn btn-primary me-4">Submit</button>
-                <button type="reset" class="btn btn-label-secondary">Cancel</button>
-                </div>
+                                        <button type="submit" class="btn btn-primary me-4">Submit</button>
+                                        <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                                        </div>
                                     </div>
                                 </div>
                         </div>
@@ -236,9 +236,9 @@
               </div>
                
             </form>
-                
 
         </div>
+
     </div>
 </div>
 

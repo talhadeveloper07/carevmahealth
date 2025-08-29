@@ -7,23 +7,42 @@ use App\Models\Employee;
 use App\Models\User;
 use App\Models\Attendance;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
+use App\Events\Notifications;
+
 
 class ProfileController extends Controller
 {
     public function index()
     {
         $employee = Employee::where('user_id', auth()->id())->firstOrFail();
-
-        // Use employee’s timezone to decide “today”
-        $todayLocal = now($employee->timezone ?? config('app.timezone'))->toDateString();
     
+        // Employee's timezone (fallback to app timezone if null)
+        $tz = $employee->timezone ?? config('app.timezone');
+    
+        // Local date according to employee’s timezone
+        $todayLocal = now($tz)->toDateString();
+    
+        // Fetch today's attendance (date column stores employee's local date)
         $attendanceToday = Attendance::where('employee_id', $employee->id)
-            ->where('date', $todayLocal)   // 'date' is a DATE column
+            ->where('date', $todayLocal)
             ->first();
     
-            return view('employee.dashboard.index',compact('employee', 'attendanceToday'));
+        // Convert times into employee’s local timezone for display
+        if ($attendanceToday) {
+            if ($attendanceToday->clock_in) {
+                $attendanceToday->clock_in_local = $attendanceToday->clock_in->copy()->timezone($tz);
+            }
+            if ($attendanceToday->clock_out) {
+                $attendanceToday->clock_out_local = $attendanceToday->clock_out->copy()->timezone($tz);
+            }
         }
+    
+        return view('employee.dashboard.index', compact('employee', 'attendanceToday'));
+    }
+    
 
     public function editProfile()
     {
@@ -53,7 +72,121 @@ class ProfileController extends Controller
             $employee->update(['profile_completed' => true]);
         }
 
+        event(new Notifications([
+            'id' => $employee->id,
+            'first_name' => $employee->first_name,
+            'last_name' => $employee->last_name,
+            'email' => $employee->email,
+            'profile_picture' => $employee->profile_picture
+        ], 'ProfileUpdated'));
+
         return redirect()->route('employee.profile.edit')->with('success', 'Profile updated successfully!');
+    }
+
+    public function employee_attendance(Request $request)
+    {
+        if ($request->ajax()) {
+            $employee = Employee::where('user_id', auth()->id())->firstOrFail();
+            
+            $query = Attendance::with(['employee', 'breaks'])
+            ->where('employee_id', $employee->id);
+
+            if ($request->filled('from_date') && $request->filled('to_date')) {
+                $query->whereBetween('date', [$request->from_date, $request->to_date]);
+            } elseif ($request->filled('from_date')) {
+                $query->whereDate('date', '>=', $request->from_date);
+            } elseif ($request->filled('to_date')) {
+                $query->whereDate('date', '<=', $request->to_date);
+            }
+
+            return DataTables::eloquent($query)
+                ->addIndexColumn()
+                ->addColumn('name', function ($row) {
+                    return $row->employee->first_name.' '.$row->employee->last_name ?? 'N/A';
+                })
+                ->addColumn('date', function ($row) {
+                    if (!$row->date) return '-';
+                    return Carbon::parse($row->date)->format('Y-m-d');
+                })
+                ->addColumn('clock_in', function ($row) {
+                    if (!$row->clock_in) return '-';
+                    $tz = $row->employee->timezone ?? config('app.timezone');
+                    return Carbon::parse($row->clock_in)->timezone($tz)->format('h:i A');
+                })
+                ->addColumn('clock_out', function ($row) {
+                    if (!$row->clock_out) return '-';
+                    $tz = $row->employee->timezone ?? config('app.timezone');
+                    return Carbon::parse($row->clock_out)->timezone($tz)->format('h:i A');
+                })
+                
+                ->addColumn('breaks', function ($row) {
+                    return $row->breaks->count();
+                })
+                // ->addColumn('break_taken', function ($row) {
+                //     $seconds = max($row->break_taken ?? 0, 0);
+                //     $hours = floor($seconds / 3600);
+                //     $minutes = floor(($seconds % 3600) / 60);
+                
+                //     if ($hours > 0 && $minutes > 0) {
+                //         return "{$hours} hrs {$minutes} mins";
+                //     } elseif ($hours > 0) {
+                //         return "{$hours} hrs";
+                //     } elseif ($minutes > 0) {
+                //         return "{$minutes} mins";
+                //     } else {
+                //         return "0 mins";
+                //     }
+                // })
+                ->addColumn('overtime', function ($row) {
+                    if ($row->overtime > 0) {
+                        $hours   = floor($row->overtime / 60);
+                        $minutes = $row->overtime % 60;
+                        return sprintf('%d:%02d hrs', $hours, $minutes);
+                    }
+                    return '-';
+                })
+                ->addColumn('worked_hours', function ($row) {
+                    if ($row->clock_in && !$row->clock_out) {
+                        // Still working
+                        return 'Running...';
+                    }
+                
+                    $workedDuration = '-';
+                
+                    if ($row->clock_in && $row->clock_out) {
+                        $start = \Carbon\Carbon::parse($row->clock_in);
+                        $end   = \Carbon\Carbon::parse($row->clock_out);
+                
+                        // ✅ Ensure it's an integer
+                        $minutes = (int) $start->diffInMinutes($end);
+                
+                        if ($minutes < 60) {
+                            $workedDuration = $minutes . ' mins';
+                        } else {
+                            $workedDuration = sprintf('%d:%02d hrs', floor($minutes / 60), $minutes % 60);
+                        }
+                    }
+                
+                    return $workedDuration;
+                })
+                ->addColumn('actions', function ($row) {
+                    return '<button class="btn btn-sm btn-warning request-change" 
+                        data-id="'.$row->id.'"
+                        data-date="'.\Carbon\Carbon::parse($row->date)->format('Y-m-d').'"
+                        data-clock_in="'.$row->clock_in.'"
+                        data-clock_out="'.$row->clock_out.'">
+                        Request Change
+                        </button>';
+                })
+                ->rawColumns(['employee', 'worked_hours','actions'])
+                ->make(true);
+        }
+        return view('employee.attendance.index');
+    }
+
+    public function settings(Request $request)
+    {
+        return view('employee.setting.index');
     }
 
 }

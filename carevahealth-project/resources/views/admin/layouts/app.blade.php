@@ -58,6 +58,8 @@
     <link rel="stylesheet" href="/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
     <link rel="stylesheet" href="/assets/vendor/libs/@form-validation/form-validation.css" />
 
+
+    <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
     <!-- Page CSS -->
 
     <!-- Helpers -->

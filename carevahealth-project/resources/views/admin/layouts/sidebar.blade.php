@@ -21,45 +21,7 @@
 
           <ul class="menu-inner py-1">
 
-          
-            <!-- e-commerce-app menu start -->
-            <li class="menu-item">
-              <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-shield-cog"></i>
-                <div data-i18n="Services">Services</div>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-map"></i>
-                <div data-i18n="Zipcodes">Zipcodes</div>
-              </a>
-            </li>
-            
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base ti tabler-shopping-cart"></i>
-                <div data-i18n="Products">Products</div>
-              </a>
-                <ul class="menu-sub">
-                    <li class="menu-item">
-                      <a href="#" class="menu-link">
-                        <div data-i18n="Product List">Product List</div>
-                      </a>
-                    </li>
-                    <li class="menu-item">
-                      <a href="#" class="menu-link">
-                        <div data-i18n="Add Product">Add Product</div>
-                      </a>
-                    </li>
-                    <li class="menu-item">
-                      <a href="app-ecommerce-category-list.html" class="menu-link">
-                        <div data-i18n="Category List">Category List</div>
-                      </a>
-                    </li>
-                  </ul>
-              
-            </li>
+
 
             <li class="menu-item">
               <a href="#" class="menu-link menu-toggle">
@@ -81,31 +43,45 @@
             </li>
 
             <li class="menu-item">
-              <a href="{{ route('admin.attendance') }}" class="menu-link">
+              <a href="#" class="menu-link menu-toggle">
                 <i class="menu-icon icon-base ti tabler-calendar-week"></i>
                 <div data-i18n="Attendance">Attendance</div>
               </a>
+                <ul class="menu-sub">
+
+                  <li class="menu-item">
+                    <a href="{{ route('admin.attendance') }}" class="menu-link">
+                      <div data-i18n="Employee Attendance">Employee Attendance</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="{{ route('admin.attendance.requests') }}" class="menu-link">
+                      <div data-i18n="Change Requests">Change Requests</div>
+                    </a>
+                  </li>
+
+                </ul>
             </li>
 
             <li class="menu-item">
-              <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-calendar"></i>
-                <div data-i18n="Appointments">Appointments</div>
+              <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base ti tabler-user-square-rounded"></i>
+                <div data-i18n="Clients">Clients</div>
               </a>
-            </li>
+                <ul class="menu-sub">
 
-            <li class="menu-item">
-            <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-ticket"></i>
-                <div data-i18n="Promotions">Promotions</div>
-              </a>
-            </li>
+                  <li class="menu-item">
+                    <a href="{{ route('all.clients') }}" class="menu-link">
+                      <div data-i18n="All Clients">All Clients</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="{{ route('add.client') }}" class="menu-link">
+                      <div data-i18n="Add New Client">Add New Client</div>
+                    </a>
+                  </li>
 
-            <li class="menu-item">
-            <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-settings"></i>
-                <div data-i18n="Setting">Setting</div>
-              </a>
+                </ul>
             </li>
             
 <li class="menu-item">
@@ -147,7 +123,7 @@
 
     <li class="menu-item">
       <a href="{{ route('employee-statuses.index') }}" class="menu-link">
-        <div data-i18n="Employee Statuses">Employee Statuses</div>
+        <div data-i18n="Employee Status">Employee Status</div>
       </a>
     </li>
 
@@ -162,6 +138,29 @@
         <div data-i18n="Reporting Managers">Reporting Managers</div>
       </a>
     </li>
+
+  </ul>
+</li>
+
+<li class="menu-item">
+  <a href="javascript:void(0);" class="menu-link menu-toggle">
+    <i class="menu-icon icon-base ti tabler-settings"></i>
+    <div data-i18n="Client Options">Client Options</div>
+  </a>
+  <ul class="menu-sub">
+
+    <li class="menu-item">
+      <a href="{{ route('services.index') }}" class="menu-link">
+        <div data-i18n="Services">Services</div>
+      </a>
+    </li>
+
+    <li class="menu-item">
+      <a href="{{ route('contracts.index') }}" class="menu-link">
+        <div data-i18n="Contract Types">Contract Types</div>
+      </a>
+    </li>
+
 
   </ul>
 </li>
