@@ -1,28 +1,40 @@
 @extends('admin.layouts.app')
 
 @section('admin_content')
-<div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="mb-4">Employee Attendance</h4>
 
-    <div class="card">
-        <div class="card-body">
-            <table id="attendanceTable" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Employee</th>
-                        <th>Date</th>
-                        <th>Clock In</th>
-                        <th>Clock Out</th>
-                        <!-- <th>Breaks</th> -->
-                        <th>Breaks Taken Time</th>
-                        <th>Worked Hours</th>
-                        <th>Over Time</th>
-                    </tr>
-                </thead>
-            </table>
+<div class="container-xxl flex-grow-1 container-p-y py-5">
+        <div class='row d-flex justify-content-center mt-5 align-items-center'>
+
+            <div class="col-md-5 custom-title-col">
+                <h4 class='mb-0 custom-page-title'>Attendance</h4>
+                <p>View, add, edit and delete all attendance details.</p>
+            </div>
+            <div class="col-md-5 text-end">
+                <a href="{{ route('admin.attendance.requests') }}" class='btn cstm-btn-link text-white'>Change Requests</a>
+            </div>
         </div>
-    </div>
+        <div class='row d-flex justify-content-center mt-5 align-items-center'>
+           
+            <div class='col-md-10'>
+                <div class="custom-card-body">
+                    <table id="attendanceTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Employee</th>
+                                <th>Date</th>
+                                <th>Clock In</th>
+                                <th>Clock Out</th>
+                                <!-- <th>Breaks</th> -->
+                                <th>Breaks Time</th>
+                                <th>Worked Hours</th>
+                                <th>Over Time</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
 </div>
 
 

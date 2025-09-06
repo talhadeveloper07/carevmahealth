@@ -13,6 +13,7 @@
         "laravel/ui": "^4.6",
         "monarobase/country-list": "^3.6",
         "pusher/pusher-php-server": "^7.2",
+        "spatie/laravel-permission": "^6.21",
         "umpirsky/country-list": "^2.0",
         "yajra/laravel-datatables-oracle": "^12.4"
     },

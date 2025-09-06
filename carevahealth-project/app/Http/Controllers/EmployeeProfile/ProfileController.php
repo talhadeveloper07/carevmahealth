@@ -51,38 +51,125 @@ class ProfileController extends Controller
     }
 
     // Profile Update
+    // public function updateProfile(Request $request)
+    // {
+    //     $employee = Employee::where('user_id', Auth::id())->first();
+
+    //     $employee->update($request->all());
+
+    //     if ($request->hasFile('profile_picture')) {
+    //         $path = $request->file('profile_picture')->store(
+    //             'employees/profile_pictures', // folder inside storage/app/public
+    //             'public' // disk
+    //         );
+        
+    //         $employee->profile_picture = $path;
+
+    //         $employee->save();
+    //     }
+    //     // Mark profile completed after first update
+    //     if (!$employee->profile_completed) {
+    //         $employee->update(['profile_completed' => true]);
+    //     }
+
+    //     event(new Notifications([
+    //         'id' => $employee->id,
+    //         'first_name' => $employee->first_name,
+    //         'last_name' => $employee->last_name,
+    //         'email' => $employee->email,
+    //         'profile_picture' => $employee->profile_picture
+    //     ], 'ProfileUpdated'));
+
+    //     return redirect()->route('employee.profile.edit')->with('success', 'Profile updated successfully!');
+    // }
+
     public function updateProfile(Request $request)
     {
-        $employee = Employee::where('user_id', Auth::id())->first();
+        $employee = Employee::where('user_id', Auth::id())->firstOrFail();
 
-        $employee->update($request->all());
+        $request->validate([
+            'field' => 'required|string',
+        ]);
 
-        if ($request->hasFile('profile_picture')) {
-            $path = $request->file('profile_picture')->store(
-                'employees/profile_pictures', // folder inside storage/app/public
-                'public' // disk
-            );
+        $field = $request->field;
+
+        // ✅ Handle upload_documents separately
+        if ($field === 'upload_documents' && $request->hasFile('value')) {
+            $path = $request->file('value')->store("employees/documents/{$employee->id}", 'public');
         
-            $employee->profile_picture = $path;
-
+            // Get old documents (already cast to array if model has $casts)
+            $docs = $employee->upload_documents ?? [];
+        
+            // Ensure it's always an array
+            if (!is_array($docs)) {
+                $docs = json_decode($docs, true) ?? [];
+            }
+        
+            // Add new document
+            $docs[] = $path;
+        
+            // Save back to DB (no json_encode needed if $casts is set)
+            $employee->upload_documents = $docs;
             $employee->save();
+        
+            return response()->json([
+                'success' => true,
+                'value'   => asset('storage/' . $path),
+            ]);
         }
-        // Mark profile completed after first update
-        if (!$employee->profile_completed) {
-            $employee->update(['profile_completed' => true]);
+        
+
+        // ✅ Handle profile picture
+        if ($field === 'profile_picture' && $request->hasFile('value')) {
+            $path = $request->file('value')->store("employees/profile_pictures/{$employee->id}", 'public');
+            $employee->update(['profile_picture' => $path]);
+
+            return response()->json([
+                'success' => true,
+                'value'   => asset('storage/' . $path),
+            ]);
         }
 
-        event(new Notifications([
-            'id' => $employee->id,
-            'first_name' => $employee->first_name,
-            'last_name' => $employee->last_name,
-            'email' => $employee->email,
-            'profile_picture' => $employee->profile_picture
-        ], 'ProfileUpdated'));
+        // ✅ Default update for other fields
+        if (!\Schema::hasColumn('employees', $field)) {
+            return response()->json(['success' => false, 'message' => 'Invalid field'], 422);
+        }
 
-        return redirect()->route('employee.profile.edit')->with('success', 'Profile updated successfully!');
+        $employee->update([$field => $request->value]);
+
+        return response()->json(['success' => true]);
     }
 
+    public function delete_document(Request $request)
+    {
+        $employee = Employee::where('user_id', Auth::id())->firstOrFail();
+
+        $index = $request->index;
+        $path = $request->path;
+
+        $docs = $employee->upload_documents ?? [];
+        if (!is_array($docs)) {
+            $docs = json_decode($docs, true) ?? [];
+        }
+
+        // Remove by value
+        $docs = array_filter($docs, function ($doc) use ($path) {
+            return $doc !== $path;
+        });
+
+        $employee->upload_documents = array_values($docs); // reindex
+        $employee->save();
+
+        // Optionally delete file from storage
+        if (\Storage::disk('public')->exists($path)) {
+            \Storage::disk('public')->delete($path);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+
+    
     public function employee_attendance(Request $request)
     {
         if ($request->ajax()) {

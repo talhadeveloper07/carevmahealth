@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'last_seen_at',
         'password',
+        'role'
     ];
 
     /**
@@ -55,6 +56,10 @@ class User extends Authenticatable
     public function isOnline()
     {
         return $this->last_seen_at && $this->last_seen_at->gt(now()->subMinutes(5));
+    }
+    public function client()
+    {
+        return $this->hasOne(Client::class);
     }
 
 }

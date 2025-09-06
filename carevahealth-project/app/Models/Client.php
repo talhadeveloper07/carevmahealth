@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     protected $fillable = [
+        'user_id',
         'name',
         'email',
         'business_name',
@@ -18,6 +19,11 @@ class Client extends Model
         'service_id',
         'ring_center'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function service()
     {
@@ -33,6 +39,15 @@ class Client extends Model
     // 🔗 A client can have many employees
     public function employees()
     {
-        return $this->hasMany(Employee::class);
+        return $this->belongsToMany(Employee::class, 'employee_client_schedules', 'client_id', 'employee_id')
+                    ->withPivot(['weekday', 'start_time', 'end_time', 'no_of_hours', 'enabled', 'repeat']);
+    }
+    public function employeeSchedules()
+    {
+        return $this->hasMany(EmployeeClientSchedule::class, 'client_id');
+    }
+    public function salaries()
+    {
+        return $this->hasMany(EmployeeSalary::class);
     }
 }

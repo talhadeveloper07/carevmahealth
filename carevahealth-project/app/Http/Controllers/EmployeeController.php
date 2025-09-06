@@ -79,6 +79,7 @@ class EmployeeController extends Controller
         $employee->department_id = $request->department;
         $employee->role_id = $request->role;
         $employee->employment_type_id = $request->employee_type;
+        $employee->employment_status_id = $request->employee_status;
         $employee->designation_id = $request->designation;
         $employee->shift_type_id = $request->shift_type;
         $employee->salary_pkr = $request->salary_pkr;
@@ -219,18 +220,21 @@ class EmployeeController extends Controller
                     $statusTitle = $isOnline ? 'Online' : 'Offline';
 
                     return '
-                        <div class="d-flex align-items-center">
-                            <div class="position-relative me-2">
-                                <img src="' . $profilePic . '" 
-                                    class="rounded-circle" 
-                                    width="40" height="40" 
-                                    style="object-fit:cover;" />
-                                <span class="position-absolute bottom-0 end-0 p-1 rounded-circle ' . $statusColor . '" 
-                                    title="' . $statusTitle . '" 
-                                    style="width:12px; height:12px; border:2px solid #fff;"></span>
-                            </div>
-                            <span>' . e($fullName) . '</span>
-                        </div>
+                    <a class="d-flex align-items-center text-decoration-none" href="'. route('edit.employee', $e->id) .'">
+                    <div class="position-relative me-2">
+                        <img src="' . $profilePic . '" 
+                            class="rounded-circle" 
+                            width="40" height="40" 
+                            style="object-fit:cover;" />
+                        <span class="position-absolute bottom-0 end-0 p-1 rounded-circle ' . $statusColor . '" 
+                            title="' . $statusTitle . '" 
+                            style="width:12px; height:12px; border:2px solid #fff;"></span>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <span class="fw-bold">'. e($fullName) .'</span>
+                        <span style="text-transform:none;color:gray;">'. $e->email .'</span>
+                    </div>
+                </a>
                     ';
                 })
                 ->addColumn('department', fn($e) => $e->department->name ?? '-')
@@ -240,8 +244,39 @@ class EmployeeController extends Controller
                 ->addColumn('shift_type', fn($e) => $e->shiftType->name ?? '-')
                 ->addColumn('status', fn($e) => $e->employeeStatus->name ?? '-')
                 ->addColumn('expertise', fn($e) => $e->expertise->name ?? '-')
-                ->addColumn('actions', fn($e) => '<a href="'. route('edit.employee', $e->id) .'" class="btn btn-sm btn-primary">Edit</a>')
-                ->rawColumns(['actions','employee_info'])
+                ->addColumn('salary', function($e){
+                    return '
+                    <div>
+                        <span><strong>Rs</strong> ' . $e->salary_pkr . '</span> <br>
+                        <span><strong>$</strong> ' . $e->salary_usd . '</span>
+                    </div>';
+                })
+                ->addColumn('actions', function($e) {
+                    $editUrl = route('edit.employee', $e->id);
+                
+                    return '
+                    <div class="btn-group">
+                        <button type="button" class="cstm-dots-btn dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ti tabler-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="'. $editUrl .'">
+                                    <i class="ti tabler-edit me-1"></i> Edit
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger delete-employee" href="javascript:void(0);" 
+                                   data-id="'. $e->id .'" 
+                                   data-name="'. e($e->first_name . ' ' . $e->last_name) .'">
+                                    <i class="ti tabler-trash me-1"></i> Delete
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                ';
+                })
+                ->rawColumns(['salary','actions','employee_info'])
                 ->make(true);
         }
 
@@ -334,5 +369,19 @@ class EmployeeController extends Controller
     return redirect()->route('edit.employee', $employee->id)
                      ->with('success', 'Employee updated successfully.');
     }
+
+    public function delete_employee($id)
+    {
+        $employee = Employee::findOrFail($id);
+
+        if ($employee->profile_picture && \Storage::disk('public')->exists($employee->profile_picture)) {
+            \Storage::disk('public')->delete($employee->profile_picture);
+        }
+
+        $employee->delete();
+
+        return response()->json(['success' => true]);
+    }
+
 
 }

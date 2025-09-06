@@ -103,3 +103,98 @@
   text-align: center;
   margin-top: 1rem;
 }
+
+/* Custom Css */
+
+.custom-card-body {
+  padding: 30px;
+  border:1px solid #e8e8e8;
+  border-radius: 20px;
+  background:white;
+}
+.custom-card-body table td {
+  padding: 25px 10px !important;
+  color: #474747 !important;
+  text-transform: capitalize !important;
+  font-size: 12px !important;
+}
+.custom-card-body table th {
+  padding: 25px 10px !important;
+  color: black !important;
+  text-transform: capitalize !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+input#dt-search-0 {
+  border-radius: 50px;
+  padding: 5px 10px;
+  width: 200px;
+}
+input#dt-search-0:focus {
+  box-shadow: none;
+  border-width: 1px;
+}
+.cstm-btn-link {
+  background: black;
+  padding: 15px 20px;
+  border-radius: 10px;
+}
+.cstm-btn-link:hover {
+  background: #0E3180;
+}
+.custom-page-title{
+  font-weight: 700;
+  color: black;
+}
+.custom-title-col p{
+  font-size: 12px;
+  margin-bottom: 0 !important;
+}
+aside#layout-menu {
+  background: black !important;
+}
+.custom-tooltip + .tooltip > .tooltip-inner {
+  font-size: 14px !important;    
+}
+.modal-content {
+  box-shadow: none !important;
+  border: 1px solid #bebebe;
+  border-radius: 15px;
+}
+.cstm-dots-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: black;
+}
+ul.nav.nav-pills {
+  padding: 20px 15px;
+  border: 1px solid #bebebe;
+  border-radius: 15px;
+  width: 280px;
+  max-width: 280px;
+  min-width: 280px;
+}
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  background: #e1ebff !important;
+  box-shadow: none;
+  color: black;
+}
+.nav-pills .nav-link {
+  padding: 15px 15px !important; 
+  margin-bottom: 5px;
+  border-radius: 11px;
+  box-shadow: none;
+}
+.nav-align-left{
+  align-items: baseline !important;
+}
+.tab-content input, .tab-content select, .tab-content textarea {
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #bebebe;
+}
+.tab-content label {
+  color: black !important;
+  font-weight: 700;
+}
