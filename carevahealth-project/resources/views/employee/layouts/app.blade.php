@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
     <link rel="stylesheet" href="/assets/vendor/fonts/fontawesome.css" />
     <link rel="stylesheet" href="/assets/vendor/css/pages/cards-advance.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/dropzone/dropzone.css" />
+
     
     <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -43,6 +45,7 @@
     <link rel="stylesheet" href="/assets/css/demo.css" />
     <link rel="stylesheet" href="/assets/css/custom.css" />
     <link rel="stylesheet" href="/assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/bs-stepper/bs-stepper.css" />
 
 
     <!-- Vendors CSS -->
@@ -150,8 +153,9 @@
     <script src="/assets/js/form-layouts.js"></script>
     <script src="/assets/vendor/libs/select2/select2.js"></script>
     <script src="/assets/js/form-layouts.js"></script>
-    <script src="/assets/vendor/libs/dropzone/dropzone.js"></script>
     <script src="/assets/js/forms-file-upload.js"></script>
+    <script src="/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
+    <script src="/assets/js/form-wizard-numbered.js"></script>
 
         <!-- Main JS -->
 

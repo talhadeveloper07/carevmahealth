@@ -104,10 +104,82 @@
         color: red;
         line-height: 1.5em;
     }
-  </style>
+    #preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.774); 
+    backdrop-filter: blur(4px); 
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.9s ease, visibility 0.9s ease;
+}
+#loader-2{
+        left: 10px;
+    position: relative;
+}
+/* Loader Animation */
+#loader-2 span {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    border-radius: 100%;
+    background-color: #0E3180;
+    margin-right: 5px;
+    opacity: 0;
+}
+
+#loader-2 span:nth-child(1) {
+    animation: opacitychange 1s ease-in-out infinite;
+}
+
+#loader-2 span:nth-child(2) {
+    animation: opacitychange 1s ease-in-out 0.33s infinite;
+}
+
+#loader-2 span:nth-child(3) {
+    animation: opacitychange 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes opacitychange {
+    0%, 100% {
+        opacity: 0;
+    }
+    60% {
+        opacity: 1;
+    }
+}
+
+    </style>
 
 </head>
 <body>
+
+<!-- <div id="preloader">
+    <div class="mb-4">
+      <a href="/" class="app-brand-link">
+        <span class="app-brand-logo demo">
+          @if (!empty($global_setting->logo))
+            <img src="{{ asset('Care_VMA.webp') }}" alt="Site Logo" style="height:auto;width:150px;">
+          @else
+            <img src="{{ asset('Care_VMA.webp') }}" alt="Default Logo" style="height:auto;width:150px;"> @endif
+        </span>
+      </a>
+    </div>
+
+    <div id="loader-2">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+</div> -->
+
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
         @include('admin.layouts.sidebar')
@@ -117,11 +189,10 @@
                 <!-- Content -->
                 @yield('admin_content')
                 </div>
-                @include('admin.layouts.footer')
+                
             </div>
         </div>
     </div>
-
 
 
     <script src="/assets/vendor/libs/jquery/jquery.js"></script>
@@ -161,6 +232,15 @@
 
         <script src="/assets/js/main.js"></script>
 
+    <script>
+        // Hide Preloader 2s after page fully loads
+        window.addEventListener("load", function() {
+            setTimeout(function() {
+                document.getElementById("preloader").style.display = "none";
+                document.getElementById("main-content").style.display = "block";
+            },2000); // 2000ms = 2 seconds
+        });
+    </script>
 
     @stack('scripts')
     <!-- Page JS -->

@@ -28,7 +28,6 @@ class Employee extends Model
         'gender',
         'marital_status',
         'about_me_notes',
-        'upload_documents',
         'department_id',
         'role_id',
         'location',
@@ -40,6 +39,7 @@ class Employee extends Model
         'salary_pkr',
         'salary_usd',
         'source_of_hire',
+        'upload_documents',
         'date_of_joining',
         'date_of_regularisation',
         'expertise_id',
@@ -50,6 +50,9 @@ class Employee extends Model
 
     protected $hidden = [
         'password',
+    ];
+    protected $casts = [
+        'upload_documents' => 'array',
     ];
 
     // 🔹 Relationships
@@ -103,6 +106,22 @@ class Employee extends Model
     {
         return "{$this->first_name} {$this->last_name}";
     }
+    public function clientSchedules()
+    {
+        return $this->hasMany(EmployeeClientSchedule::class, 'employee_id');
+    }
+    
+    public function clients()
+    {
+        return $this->belongsToMany(Client::class, 'employee_client_schedules', 'employee_id', 'client_id')
+                    ->withPivot(['weekday', 'start_time', 'end_time', 'no_of_hours', 'enabled', 'repeat']);
+    }
+
+    public function salaries()
+    {
+        return $this->hasMany(EmployeeSalary::class);
+    }
+
 
     protected static function boot()
     {

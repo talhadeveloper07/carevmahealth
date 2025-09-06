@@ -2,25 +2,35 @@
 
 @section('admin_content')
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="mb-4">Employee Attendance</h4>
-
-    <div class="card">
-        <div class="card-body">
-            <table id="attendanceTable" class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Employee</th>
-                        <th>Date</th>
-                        <th>Requested Clock In</th>
-                        <th>Requested Clock Out</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-            </table>
+        <div class='row d-flex justify-content-center mt-5 align-items-center'>
+            <div class="col-md-5 custom-title-col">
+                <h4 class='mb-0 custom-page-title'>Attendance Change Requests</h4>
+                <p>View, add, edit and delete all attendance request details.</p>
+            </div>
+            <div class="col-md-5 text-end">
+                <a href="{{ route('admin.attendance') }}" class='btn cstm-btn-link text-white'>Attendance Records</a>
+            </div>
         </div>
-    </div>
+       <div class="row d-flex justify-content-center mt-5 align-items-center">
+        <div class="col-md-10">
+            <div class="custom-card-body">
+                <table id="attendanceTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Employee</th>
+                            <th>Date</th>
+                            <th>Requested Clock In</th>
+                            <th>Requested Clock Out</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+       </div>
+
 </div>
 
 

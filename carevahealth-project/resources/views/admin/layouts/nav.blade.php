@@ -1,11 +1,30 @@
 <style>
-    .badge-notifications {
-        min-width: 18px;
-        height: 18px;
-        font-size: 12px;
-        line-height: 18px;
-        text-align: center;
-        padding: 0 5px;
+    .toast-noti {
+        position: fixed;
+        bottom: 20px;
+        left: -300px;
+        /* hidden left */
+        background: #2E3192;
+        color: #fff;
+        padding: 12px 16px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        transition: left 0.4s ease;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .toast-noti.show {
+        left: 20px;
+        /* slide in */
+    }
+
+    /* Offline toast color */
+    .toast-noti.offline {
+        background: #d9534f;
     }
 </style>
 <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
@@ -162,7 +181,6 @@
                         </div>
                     </li>
                 </ul>
-
             </li>
             <!--/ Notification -->
 
@@ -293,6 +311,14 @@
                     // Skip removed notifications
                     if (removedIds.includes(notification.id)) return;
 
+                    // ✅ Skip EmployeeClockedIn / EmployeeClockedOut
+                    if (
+                        notification.type.includes("EmployeeClockedIn") ||
+                        notification.type.includes("EmployeeClockedOut")
+                    ) {
+                        return;
+                    }
+
                     let notifData = typeof notification.data === "string" ?
                         JSON.parse(notification.data) :
                         notification.data;
@@ -306,68 +332,150 @@
                         message = `New user <b>${name}</b> registered!`;
                     } else if (notification.type === "ProfileUpdated") {
                         message = `<b>${name}</b> has updated their profile!`;
+                    } else if (notification.type === "requestChangeTime") {
+                        message = `<b>${name}</b> has requested a time change!`;
+                    } else if (notification.type === "ApproveRequest") {
+                        message = `<b>${name}</b>'s time change request has been approved!`;
                     }
-
                     let unreadClass = notification.is_read == 0 ?
                         'style="background:#0e31800d;color:#fff;"' : "";
 
                     let markReadLink = notification.is_read == 0 ?
                         `<div class="flex-shrink-0 ms-2">
-                                <a href="javascript:void(0)" class="mark-single-read small" data-id="${notification.id}">
-                                    <span style="
-                                        display:inline-block;
-                                        width:12px;
-                                        height:12px;
-                                        background:#0E3180;
-                                        border-radius:50%;
-                                    "></span>
-                                </a>
-                           </div>` :
+                        <a href="javascript:void(0)" class="mark-single-read small" data-id="${notification.id}">
+                            <span style="
+                                display:inline-block;
+                                width:12px;
+                                height:12px;
+                                background:#0E3180;
+                                border-radius:50%;
+                            "></span>
+                        </a>
+                   </div>` :
                         "";
 
                     let closeBtn = `<div class="flex-shrink-0 ms-2">
-                                        <a href="javascript:void(0)" class="notification-close text-danger small" data-id="${notification.id}">×</a>
-                                    </div>`;
+                                    <a href="javascript:void(0)" class="notification-close text-danger small" data-id="${notification.id}">×</a>
+                                </div>`;
 
                     list.innerHTML += `
-                        <li class="list-group-item list-group-item-action dropdown-notifications-item d-flex justify-content-between align-items-center" ${unreadClass} data-id="${notification.id}">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0 me-3">
-                                    <div class="avatar">
-                                        <span class="avatar-initial rounded-circle bg-label-success">
-                                            ${name.substring(0,2).toUpperCase()}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1 small">${message}</h6>
-                                    <small class="text-body-secondary">
-                                        ${new Date(notification.created_at).toLocaleString()}
-                                    </small>
-                                </div>
+                <li class="list-group-item list-group-item-action dropdown-notifications-item d-flex justify-content-between align-items-center" ${unreadClass} data-id="${notification.id}">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="avatar">
+                                <span class="avatar-initial rounded-circle bg-label-success">
+                                    ${name.substring(0,2).toUpperCase()}
+                                </span>
                             </div>
-                            <div class="d-flex align-items-center">
-                                ${markReadLink}
-                                ${closeBtn}
-                            </div>
-                        </li>
-                    `;
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1 small">${message}</h6>
+                            <small class="text-body-secondary">
+                                ${new Date(notification.created_at).toLocaleString()}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        ${markReadLink}
+                        ${closeBtn}
+                    </div>
+                </li>
+            `;
                 });
 
                 // Update badge count (only unread and not removed)
-                updateNotificationBadge(data.filter(n => !n.is_read && !removedIds.includes(n.id)).length);
+                updateNotificationBadge(data.filter(n =>
+                    !n.is_read &&
+                    !removedIds.includes(n.id) &&
+                    n.type !== "EmployeeClockedIn" &&
+                    n.type !== "EmployeeClockedOut"
+                ).length);
             });
     }
 
     // Initial fetch
     fetchNotifications();
 
-    // Pusher real-time updates
-    var userChannel = pusher.subscribe("userregistered");
-    var profileChannel = pusher.subscribe("profileupdated");
+    // requestChangeTime
+    var requestChangeTime = pusher.subscribe("requestchangetime"); // channel lowercase
+    requestChangeTime.bind("requestChangeTimeNotification", function(data) {
+        console.log("📢 Request Change Time Event:", data);
+        fetchNotifications();
+    });
 
+    // user registered
+    var userChannel = pusher.subscribe("userregistered");
     userChannel.bind("UserRegisteredNotification", fetchNotifications);
+    // profile updated
+    var profileChannel = pusher.subscribe("profileupdated");
     profileChannel.bind("ProfileUpdatedNotification", fetchNotifications);
+    // check in and out
+    // ✅ Employee Clock In
+    var clockInChannel = pusher.subscribe("employeeclockedin");
+    clockInChannel.bind("EmployeeClockedInNotification", function(data) {
+        let noti = document.createElement("div");
+        noti.className = "toast align-items-center border-0 show";
+        noti.setAttribute("role", "alert");
+        noti.setAttribute("aria-live", "assertive");
+        noti.setAttribute("aria-atomic", "true");
+        noti.style.position = "fixed";
+        noti.style.bottom = "20px";
+        noti.style.left = "20px";
+        noti.style.zIndex = "9999";
+        noti.style.minWidth = "280px";
+
+        noti.innerHTML = `
+    <div class="toast-body bg-white d-flex justify-content-between align-items-center" style="padding:25px 20px;">
+        <div class="d-flex align-items-center">
+            <i class="icon-base ti tabler-alarm-filled icon-sm me-2 text-success"></i>
+            ${data.data.first_name} is now Clocked-In!
+        </div>
+        <button type="button" class="btn-close ms-3" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+`;
+
+
+        document.body.appendChild(noti);
+
+        // Auto remove after 4s
+        setTimeout(() => noti.remove(), 4000);
+
+        console.log("✅ Online Event:", data);
+    });
+
+
+    // ✅ Employee Clock Out
+    var clockOutChannel = pusher.subscribe("employeeclockedout");
+    clockOutChannel.bind("employeeclockedOutNotification", function(data) {
+        let noti = document.createElement("div");
+        noti.className = "toast align-items-center border-0 show";
+        noti.setAttribute("role", "alert");
+        noti.setAttribute("aria-live", "assertive");
+        noti.setAttribute("aria-atomic", "true");
+        noti.style.position = "fixed";
+        noti.style.bottom = "20px";
+        noti.style.left = "20px";
+        noti.style.zIndex = "9999";
+        noti.style.minWidth = "280px";
+
+        noti.innerHTML = `
+    <div class="toast-body bg-white d-flex justify-content-between align-items-center" style="padding:25px 20px;">
+        <div class="d-flex align-items-center">
+            <i class="icon-base ti tabler-alarm-filled icon-sm me-2 text-danger"></i>
+            ${data.data.first_name} is now Clocked-Out!
+        </div>
+        <button type="button" class="btn-close ms-3" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>`;
+
+        document.body.appendChild(noti);
+
+        // Auto remove after 4s
+        setTimeout(() => noti.remove(), 4000);
+
+        console.log("✅ Offline Event:", data);
+    });
+
+
 
     // Mark all as read (AJAX)
     $(document).on("click", ".dropdown-notifications-all", function(e) {
@@ -411,6 +519,12 @@
                 updateNotificationBadge(count);
             }
         });
+    });
+
+    var ApproveRequest = pusher.subscribe("approverequest"); // channel lowercase
+    ApproveRequest.bind("ApproveRequestNotification", function(data) {
+        console.log("📢 Request Change Time Event:", data);
+        fetchNotifications();
     });
 
     // Close notification (× button, frontend only, persistent hide)

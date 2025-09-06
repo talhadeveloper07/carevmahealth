@@ -2,11 +2,7 @@
           <div class="app-brand demo">
             <a href="{{ route('employee.dashboard') }}" class="app-brand-link">
               <span class="app-brand-logo demo">
-                @if(!empty($global_setting->logo))
-                <img src="{{ asset('Care_VMA.webp') }}" alt="Site Logo" style="height:auto;width:170px;">
-              @else
-                <img src="{{ asset('Care_VMA.webp') }}" alt="Default Logo" style="height:auto;width:170px;">
-              @endif
+               
 
               </span>
             </a>

@@ -16,42 +16,88 @@
                             </ul>
                         </div>
                     @endif
-        <form action="{{ route('insert.employee') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="row my-6">
-                <div class="col">
-                  <h4>Add New Employee</h4>
-                  <div class="accordion" id="collapsibleSection">
-                    <div class="card accordion-item active">
-                      <h2 class="accordion-header" id="headingBasicInformation">
+
+    <div class="row d-flex justify-content-center mt-5">
+    <div class="col-md-10">
+                  <h6 class="text-body-secondary">Vertical</h6>
+                  <div class="nav-align-left">
+                    <ul class="nav nav-pills me-4" role="tablist">
+                      <li class="nav-item">
                         <button
                           type="button"
-                          class="accordion-button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseBasicInformation"
-                          aria-expanded="true"
-                          aria-controls="collapseBasicInformation">
-                          Basic Information
+                          class="nav-link active"
+                          role="tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-left-basic"
+                          aria-controls="navs-pills-left-basic"
+                          aria-selected="true">
+                          Basic
                         </button>
-                      </h2>
-                      <div
-                        id="collapseBasicInformation"
-                        class="accordion-collapse collapse show"
-                        data-bs-parent="#collapsibleSection">
-                        <div class="accordion-body">
-                        <div class="row g-6">
-                                <div class="col-md-6">
+                      </li>
+                      <li class="nav-item">
+                        <button
+                          type="button"
+                          class="nav-link"
+                          role="tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-left-work"
+                          aria-controls="navs-pills-left-work"
+                          aria-selected="false">
+                          Work
+                        </button>
+                      </li>
+                      <li class="nav-item">
+                        <button
+                          type="button"
+                          class="nav-link"
+                          role="tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-left-hierarchy"
+                          aria-controls="navs-pills-left-hierarchy"
+                          aria-selected="false">
+                          Hierarchy
+                        </button>
+                      </li>
+                      <li class="nav-item">
+                        <button
+                          type="button"
+                          class="nav-link"
+                          role="tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-left-personal"
+                          aria-controls="navs-pills-left-personal"
+                          aria-selected="false">
+                          Personal
+                        </button>
+                      </li>
+                      <li class="nav-item">
+                        <button
+                          type="button"
+                          class="nav-link"
+                          role="tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-left-documents"
+                          aria-controls="navs-pills-left-documents"
+                          aria-selected="false">
+                          Documents
+                        </button>
+                      </li>
+                    </ul>
+                    <form action="{{ route('insert.employee') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="navs-pills-left-basic" role="tabpanel">
+                            <div class="mb-2">
                                 <label class="form-label" for="multicol-first-name">First Name</label>
                                 <input type="text" id="multicol-first-name" name='first_name' class="form-control @error('first_name') is-invalid @enderror" placeholder="John" />
-                                </div>
-                                <div class="col-md-6">
+                            </div>
+                            <div class="mb-2">
                                 <label class="form-label" for="multicol-last-name">Last Name</label>
                                 <input type="text" id="multicol-last-name" name='last_name' class="form-control @error('last_name') is-invalid @enderror" placeholder="Doe" />
-                                </div>
-                                <div class="col-md-6">
+                            </div>
+                            <div class="mb-2">
                                 <label class="form-label" for="multicol-email">Email</label>
-                                <div class="input-group input-group-merge">
-                                    <input
+                                 <input
                                     type="text"
                                     id="multicol-email"
                                     class="form-control @error('email') is-invalid @enderror"
@@ -59,67 +105,10 @@
                                     placeholder="john.doe"
                                     aria-label="john.doe"
                                     aria-describedby="multicol-email2" />
-                                    <span class="input-group-text" id="multicol-email2">@example.com</span>
-                                </div>
-                                </div>
-                                <!-- <div class="col-md-6">
-                                <div class="form-password-toggle">
-                                    <label class="form-label" for="multicol-password">Password</label>
-                                    <div class="input-group input-group-merge">
-                                    <input
-                                        type="password"
-                                        id="multicol-password"
-                                        class="form-control @error('password') is-invalid @enderror"
-                                        name='password'
-                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                        aria-describedby="multicol-password2" />
-                                    <span class="input-group-text cursor-pointer" id="multicol-password2"
-                                        ><i class="icon-base ti tabler-eye-off"></i
-                                    ></span>
-                                    </div>
-                                </div>
-                                </div>
-                                <div class="col-md-6">
-                                <div class="form-password-toggle">
-                                    <label class="form-label" for="multicol-confirm-password">Confirm Password</label>
-                                    <div class="input-group input-group-merge">
-                                    <input
-                                        type="password"
-                                        id="multicol-confirm-password"
-                                        class="form-control"
-                                        name='password_confirmation'
-                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                        aria-describedby="multicol-confirm-password2" />
-                                    <span class="input-group-text cursor-pointer" id="multicol-confirm-password2"
-                                        ><i class="icon-base ti tabler-eye-off"></i
-                                    ></span>
-                                    </div>
-                                </div>
-                                </div> -->
                             </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card accordion-item">
-                      <h2 class="accordion-header" id="headingWorkInformation">
-                        <button
-                          type="button"
-                          class="accordion-button collapsed"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseWorkInformation"
-                          aria-expanded="false"
-                          aria-controls="collapseWorkInformation">
-                          Work Information
-                        </button>
-                      </h2>
-                      <div
-                        id="collapseWorkInformation"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="headingWorkInformation"
-                        data-bs-parent="#collapsibleSection">
-                          <div class="accordion-body">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
+                            </div>
+                            <div class="tab-pane fade" id="navs-pills-left-work" role="tabpanel">
+                                    <div class="mb-2">
                                         <label class="form-label" for="department">Department</label>
                                         <select id="department" name='department' class="select form-select @error('department') is-invalid @enderror">
                                             <option>Select Department</option>
@@ -128,7 +117,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="mb-2">
                                         <label class="form-label" for="role">Role</label>
                                         <select id="role" name='role' class="select form-select @error('role') is-invalid @enderror">
                                             <option>Select Role</option>
@@ -137,7 +126,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="mb-2">
                                         <label class="form-label" for="employee_type">Employee Type</label>
                                         <select id="employee_type" name='employee_type' class="select form-select @error('employee_type') is-invalid @enderror">
                                             <option>Select Employee Type</option>
@@ -146,16 +135,16 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="mb-2">
                                         <label class="form-label" for="designation">Designation</label>
                                         <select id="designation" name='designation' class="select form-select @error('designation') is-invalid @enderror">
                                             <option>Select Designation</option>
-                                            @foreach($designations as $designations)
-                                            <option value="{{ $designations->id }}">{{ $designations->name }}</option>
+                                            @foreach($designations as $designation)
+                                            <option value="{{ $designation->id }}">{{ $designation->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="mb-2">
                                         <label class="form-label" for="shift_type">Shift Type</label>
                                         <select id="shift_type" name='shift_type' class="select form-select @error('shift_type') is-invalid @enderror">
                                             <option>Select Shift Type</option>
@@ -164,7 +153,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="mb-2">
                                         <label class="form-label" for="employee_status">Employee Status</label>
                                         <select id="employee_status" name='employee_status' class="select form-select @error('eployee_status') is-invalid @enderror">
                                             <option>Select Employee Status</option>
@@ -173,30 +162,30 @@
                                                 @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="mb-2">
                                         <label class="form-label" for="salary_pkr">Salary In PKR</label>
                                         <input type="text" id="salary_pkr" name='salary_pkr' class="form-control @error('salary_pkr') is-invalid @enderror" placeholder="500" />
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="mb-2">
                                         <label class="form-label" for="salary_usd">Salary In USD</label>
                                         <input type="text" id="salary_usd" name='salary_usd' class="form-control @error('salary_usd') is-invalid @enderror" placeholder="500" />
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="mb-2">
                                         <label class="form-label" for="source_of_hire">Source of Hire</label>
                                         <select id="source_of_hire" name='source_of_hire' class="select form-select @error('source_of_hire') is-invalid @enderror">
                                             <option value="seo" selected>SEO</option>
                                             <option value="sales">Sales</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="mb-2">
                                         <label class="form-label" for="joining_date">Date of Joining</label>
                                         <input type="date" name='joining_date' id='joining_date' class="form-control @error('joining_date') is-invalid @enderror" placeholder="YYYY-MM-DD" />
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="mb-2">
                                         <label class="form-label" for="regularisation_date">Date of Regularisation</label>
                                         <input type="date" name='regularisation_date' id='regularisation_date' class="form-control" placeholder="YYYY-MM-DD" />
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="mb-2">
                                         <label class="form-label" for="current_expertise">Current Expertise</label>
                                         <select id="current_expertise" name='current_expertise' class="select form-select">
                                             <option>Select Expertise</option>
@@ -205,157 +194,90 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="mb-2">
                                         <label class="form-label" for="multicol-birthdate">Break Allowed(Hrs)</label>
                                         <input type="number" name="breaks" class="form-control" placeholder="0.00" step="0.01" min="0" />
                                     </div>
-                                </div>
-                          </div>
-                      </div>
-                    </div>
-
-                    <div class="card accordion-item">
-                      <h2 class="accordion-header" id="headingHierarchyInformation">
-                        <button
-                          type="button"
-                          class="accordion-button collapsed"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseHierarchyInformation"
-                          aria-expanded="false"
-                          aria-controls="collapseHierarchyInformation">
-                          Hierarchy Information
-                        </button>
-                      </h2>
-                      <div
-                        id="collapseHierarchyInformation"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="headingHierarchyInformation"
-                        data-bs-parent="#collapsibleSection">
-                        <div class="accordion-body">
-                            <div class="row g-6">
-                                    <div class="col-md-6 mb-3">
+                            </div>
+                            <div class="tab-pane fade" id="navs-pills-left-hierarchy" role="tabpanel">
+                                    <div class="mb-3">
                                         <label class="form-label" for="reporting_manager">Reporting Manager</label>
                                         <select id="reporting_manager" name='reporting_manager' class="select form-select">
                                             <option>Select Reporting Manager</option>
                                             @foreach($reportingManagers as $manager)
-                                             <option value='{{ $manager->id }}'>{{$manager->name}}</option>
-                                             @endforeach
+                                                <option value='{{ $manager->id }}'>{{$manager->name}}</option>
+                                                @endforeach
                                         </select>
                                     </div>
                             </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card accordion-item">
-                      <h2 class="accordion-header" id="headingPersonalinformation">
-                        <button
-                          type="button"
-                          class="accordion-button collapsed"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapsePersonalinformation"
-                          aria-expanded="false"
-                          aria-controls="collapsePersonalinformation">
-                          Personal Information
-                        </button>
-                      </h2>
-                      <div
-                        id="collapsePersonalinformation"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="headingPersonalinformation"
-                        data-bs-parent="#collapsibleSection">
-                                <div class="accordion-body">
-                                    <div class="row g-6">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label" for="gender">Gender</label>
-                                            <select id="gender" name='gender' class="select form-select">
-                                                <option disabled>Select Gender</option>
-                                                <option value="male">Male</option>
-                                                <option value="female">Female</option>
-                                                <option value="other">Other</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                        <label class="form-label" for="marital_status">Marital Status</label>
-                                        <select id="marital_status" name='marital_status' class="select form-select">
-                                            <option value="single">Single</option>
-                                            <option value="married">Married</option>
-                                        </select>
-                                        </div>
-                                        <div class="col-md-6 select2-primary">
-                                            <label class="form-label" for="multicol-birthdate">Age</label>
-                                            <input
-                                                type="number"
-                                                class="form-control"
-                                                placeholder="20"
-                                                name='age' />
-                                        </div>
-                                        <div class="col-md-6">
-                                        <label class="form-label" for="multicol-birthdate">Birth Date</label>
-                                        <input
-                                            type="date"
-                                            class="form-control"
-                                            placeholder="YYYY-MM-DD"
-                                            name='birth_date' />
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label class='form-label' for="">About Me Notes</label>
-                                            <textarea name="collapsible-notes"
-                                                class="form-control"
-                                                id="collapsible-notes"
-                                                rows="2"
-                                                name='notes'
-                                                placeholder="write additional notes"></textarea>
-                                        </div>
-                                    </div>
+                            <div class="tab-pane fade" id="navs-pills-left-personal" role="tabpanel">
+                                <div class="mb-3">
+                                    <label class="form-label" for="gender">Gender</label>
+                                    <select id="gender" name='gender' class="select form-select">
+                                        <option disabled>Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
                                 </div>
-                        </div>
-                    </div>
-
-                    <div class="card accordion-item">
-                      <h2 class="accordion-header" id="headingDocuments">
-                        <button
-                          type="button"
-                          class="accordion-button collapsed"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseDocuments"
-                          aria-expanded="false"
-                          aria-controls="collapseDocuments">
-                          Documents
-                        </button>
-                      </h2>
-                      <div
-                        id="collapseDocuments"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="headingDocuments"
-                        data-bs-parent="#collapsibleSection">
-                                <div class="accordion-body">
-                                    <div class="row g-6">
-                                       
-                                        <div class="col-12">
-                                            <form action="/upload" class="dropzone needsclick dz-clickable" id="dropzone-multi">
-                                                <div class="dz-message needsclick">
-                                                Drop files here or click to upload
-                                                <span class="note needsclick">you can add multiple documents here.</span>
-                                                </div>
-                                                <div class="fallback">
-                                                <input name="file" type="file" />
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="mt-4">
-                                            <button type="submit" class="btn btn-primary me-4">Submit</button>
-                                            <button type="reset" class="btn btn-label-secondary">Cancel</button>
-                                        </div>
-                                    </div>
+                                <div class="mb-3">
+                                <label class="form-label" for="marital_status">Marital Status</label>
+                                <select id="marital_status" name='marital_status' class="select form-select">
+                                    <option value="single">Single</option>
+                                    <option value="married">Married</option>
+                                </select>
                                 </div>
+                                <div class="mb-3 select2-primary">
+                                    <label class="form-label" for="multicol-birthdate">Age</label>
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        placeholder="20"
+                                        name='age' />
+                                </div>
+                                <div class="mb-3">
+                                <label class="form-label" for="multicol-birthdate">Birth Date</label>
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    placeholder="YYYY-MM-DD"
+                                    name='birth_date' />
+                                </div>
+                                <div class="mb-3">
+                                    <label class='form-label' for="">About Me Notes</label>
+                                    <textarea name="collapsible-notes"
+                                        class="form-control"
+                                        id="collapsible-notes"
+                                        rows="2"
+                                        name='notes'
+                                        placeholder="write additional notes"></textarea>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="navs-pills-left-documents" role="tabpanel">
+                                <div class="mb-3">
+                                    <form action="/upload" class="dropzone needsclick dz-clickable" id="dropzone-multi">
+                                        <div class="dz-message needsclick">
+                                        Drop files here or click to upload
+                                        <span class="note needsclick">you can add multiple documents here.</span>
+                                        </div>
+                                        <div class="fallback">
+                                        <input name="file" type="file" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="mt-4 d-block">
+                            <button type="submit" class="btn btn-primary me-4">Submit</button>
+                            <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                            </div>
                         </div>
-                    </div>
-                    
+                    </form>
                   </div>
                 </div>
-              </div>
-    </form>
+    </div>
 </div>
+
+
 
 
 @endsection

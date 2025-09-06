@@ -17,7 +17,9 @@ use App\Http\Controllers\Auth\OrgGoogleController;
 use App\Http\Controllers\Admin\Client\ServiceController;
 use App\Http\Controllers\Admin\Client\ContractTypeController;
 use App\Http\Controllers\Admin\Client\AdminClientController;
+use App\Http\Controllers\EmployeeClientScheduleController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 
 
 Route::get('/', function () {
@@ -34,9 +36,7 @@ Route::post('/complete-profile', [EmployeeController::class, 'submitCompleteProf
 
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard',function(){
-        return view('admin.dashboard.index');
-    });
+    Route::get('/dashboard',[AdminDashboardController::class,'index'])->name('admin.dashboard');
   
     // Employee Options Routes
     Route::resource('departments', DepartmentController::class);
@@ -56,7 +56,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('clients',[AdminClientController::class,'index'])->name('all.clients');
     Route::get('add-client',[AdminClientController::class,'add_client'])->name('add.client');
     Route::post('insert-client',[AdminClientController::class,'insert_client'])->name('insert.client');
-
+    Route::get('client/{id}/schedule',[AdminClientController::class,'client_schedule'])->name('client.schedule');
+    Route::get('assign-employee',[AdminClientController::class,'assign_employee'])->name('client.assign.employee');
+    Route::get('assign-client/{id}/details', [AdminClientController::class, 'get_client_details'])->name('client.details');
+    Route::get('assign-employee/{id}/details', [AdminClientController::class, 'get_employee_details'])->name('employee.details');
+    Route::post('assign-employee/schedules', [EmployeeClientScheduleController::class, 'store'])
+    ->name('employee.schedules.store');
+    Route::get('client/{id}/assign-employee',[AdminClientController::class,'assign_va'])->name('client.assigned.va');
+    Route::get('client/{id}/profile',[AdminClientController::class,'client_profile'])->name('client.profile');
+    Route::get('client/{id}/daily-work-report',[AdminClientController::class,'daily_report'])->name('daily.report');
 
 
     // Employee Routes
@@ -66,6 +74,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('employees',[EmployeeController::class,'all_employees'])->name('all.employees');
     Route::get('edit-employee/profile/{id}',[EmployeeController::class,'edit_employee'])->name('edit.employee');
     Route::put('update-employee/{id}',[EmployeeController::class,'update_employee'])->name('update.employee');
+    Route::delete('employees/{id}', [EmployeeController::class, 'delete_employee'])->name('delete.employee');
     
     // Attendance Route
     Route::get('attendance',[AdminAttendanceController::class,'index'])->name('admin.attendance');
