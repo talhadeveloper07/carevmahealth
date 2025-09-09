@@ -2,27 +2,44 @@
 @section('admin_content')
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    @include('admin.client.profile_layouts.header')
-    @include('admin.client.profile_layouts.nav')
-    <div class="row">
-        <div class="col-xl-12 col-lg-12 order-0 order-md-1">
 
+        <div class='row d-flex justify-content-center mt-5 align-items-center mb-5'>
+            <div class="col-md-5 custom-title-col">
+                <h4 class='mb-0 custom-page-title'>Client Profile - {{ $client->name }}</h4>
+                <p>Add client details.</p>
+            </div>
+            <div class="col-md-5 text-end">
+                <a href="{{ route('add.client') }}" class='btn cstm-btn-link-2 text-white'>Add</a>
+                <a href="{{ route('all.clients') }}" class='btn cstm-btn-link text-white'>Clients</a>
+            </div>
+
+            <div class="col-md-10 mt-5">
                 @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                    
-                            @foreach ($errors->all() as $error)
-                                <p class='p-0 mb-1'>{{ $error }}</p>
-                            @endforeach
-                    
+                    <div class="alert alert-solid-success d-flex align-items-center" role="alert">
+                        <span class="alert-icon rounded">
+                            <i class="icon-base ti tabler-check icon-md"></i>
+                        </span>
+                        {{ session('success') }}
                     </div>
                 @endif
 
-                <div class="card">
-                    <div class="card-body">
-                        <table class="table table-striped" id="attendanceTable" style="width:100%">
+                @if ($errors->any())
+                    <div class="alert alert-solid-danger d-flex align-items-center" role="alert">
+                        <span class="alert-icon rounded">
+                            <i class="icon-base ti tabler-ban icon-md"></i>
+                        </span>
+                        {{ implode(' | ', $errors->all()) }}
+                    </div>
+                @endif
+            </div>
+        </div>
+
+    <div class="row d-flex justify-content-center mt-5 align-items-center mb-5">
+        <div class="col-md-10">
+                <div class="nav-align-left">
+                    @include('admin.client.profile_layouts.nav')
+                    <div class="custom-card-body w-100">
+                        <table class="table" id="attendanceTable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Employee</th>
@@ -36,11 +53,10 @@
                         </table>
                     </div>
                 </div>
-
-                
         </div>
     </div>
 </div>
+
 
 <script>
 $(function () {
@@ -59,4 +75,5 @@ $(function () {
     });
 });
 </script>
+
 @endsection

@@ -54,6 +54,7 @@ class EmployeeController extends Controller
 
     public function insert_employee(Request $request)
     {
+
         $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
@@ -66,6 +67,8 @@ class EmployeeController extends Controller
             'employee_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'documents.*' => 'nullable|file|max:5120',
             'breaks' => 'required',
+            'timezone' => 'nullable'
+
         ]);
     
         DB::beginTransaction();
@@ -79,13 +82,14 @@ class EmployeeController extends Controller
         $employee->department_id = $request->department;
         $employee->role_id = $request->role;
         $employee->employment_type_id = $request->employee_type;
-        $employee->employment_status_id = $request->employee_status;
+        $employee->employee_status_id = $request->employee_status;
         $employee->designation_id = $request->designation;
         $employee->shift_type_id = $request->shift_type;
         $employee->salary_pkr = $request->salary_pkr;
         $employee->salary_usd = $request->salary_usd;
         $employee->date_of_joining = $request->joining_date;
         $employee->break_allowed_hours = $request->breaks;
+        $employee->timezone = $request->timezone;
         $employee->date_of_regularisation = $request->regularisation_date;
     
         if ($request->hasFile('employee_image')) {
@@ -360,12 +364,6 @@ class EmployeeController extends Controller
     //     $employee->save();
     // }
 
-    event(new Notifications([
-        'id' => $employee->id,
-        'name' => $employee->name,
-        'email' => $employee->email
-    ], 'UserRegistered'));
-
     return redirect()->route('edit.employee', $employee->id)
                      ->with('success', 'Employee updated successfully.');
     }
@@ -382,6 +380,5 @@ class EmployeeController extends Controller
 
         return response()->json(['success' => true]);
     }
-
 
 }

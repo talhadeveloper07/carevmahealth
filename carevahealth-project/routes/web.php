@@ -20,6 +20,8 @@ use App\Http\Controllers\Admin\Client\AdminClientController;
 use App\Http\Controllers\EmployeeClientScheduleController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\EmployeeOptionController;
+use App\Http\Controllers\Admin\InvoicesController;
 
 
 Route::get('/', function () {
@@ -48,6 +50,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('expertises', ExpertiseController::class);
     Route::resource('reporting-managers', ReportingManagerController::class);
 
+    Route::get('employee-options',[EmployeeOptionController::class,'employee_options'])->name('employee.options');
+
     // Client Options Routes
     Route::resource('services', ServiceController::class);
     Route::resource('contracts', ContractTypeController::class);
@@ -57,14 +61,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('add-client',[AdminClientController::class,'add_client'])->name('add.client');
     Route::post('insert-client',[AdminClientController::class,'insert_client'])->name('insert.client');
     Route::get('client/{id}/schedule',[AdminClientController::class,'client_schedule'])->name('client.schedule');
-    Route::get('assign-employee',[AdminClientController::class,'assign_employee'])->name('client.assign.employee');
     Route::get('assign-client/{id}/details', [AdminClientController::class, 'get_client_details'])->name('client.details');
     Route::get('assign-employee/{id}/details', [AdminClientController::class, 'get_employee_details'])->name('employee.details');
     Route::post('assign-employee/schedules', [EmployeeClientScheduleController::class, 'store'])
     ->name('employee.schedules.store');
+    Route::put('client/employee/schedules', [EmployeeClientScheduleController::class, 'update'])->name('schedules.update');
+    Route::delete('client/employee/schedules/{id}', [EmployeeClientScheduleController::class, 'destroy'])->name('schedules.destroy');
     Route::get('client/{id}/assign-employee',[AdminClientController::class,'assign_va'])->name('client.assigned.va');
     Route::get('client/{id}/profile',[AdminClientController::class,'client_profile'])->name('client.profile');
     Route::get('client/{id}/daily-work-report',[AdminClientController::class,'daily_report'])->name('daily.report');
+
+    // Invoice Routes
+    Route::post('/employee-salaries/generate', [EmployeeClientScheduleController::class, 'generate'])->name('employee_salaries.generate');
+    Route::get('invoices',[InvoicesController::class,'index'])->name('admin.invoices');
 
 
     // Employee Routes

@@ -66,13 +66,13 @@
           </li>
 
 
-            <li class='menu-item'>
+            <li class='menu-item {{ request()->routeIs("departments.index") ? "active" : "" }}'>
               <a
                 type="button"
                 data-bs-toggle="tooltip"
                 data-bs-placement="right"
                 class='menu-link custom-tooltip'
-                href="{{ route('all.clients') }}"
+                href="{{ route('departments.index') }}"
                 title="Employee Setting">
                 <i class="menu-icon icon-base ti tabler-settings"></i>
               </a>
@@ -87,6 +87,18 @@
                 href="{{ route('all.clients') }}"
                 title="Client Setting">
                 <i class="menu-icon icon-base ti tabler-settings"></i>
+              </a>
+            </li>
+
+            <li class='menu-item {{ request()->routeIs("admin.invoices") ? "active" : "" }}'>
+              <a
+                type="button"
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                class='menu-link custom-tooltip'
+                href="{{ route('admin.invoices') }}"
+                title="Invoices">
+                <i class="menu-icon icon-base ti tabler-file-dollar"></i>
               </a>
             </li>
 

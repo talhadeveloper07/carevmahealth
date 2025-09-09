@@ -104,6 +104,33 @@
         color: red;
         line-height: 1.5em;
     }
+
+    .loader {
+  width: 25px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #000;
+  box-shadow: 0 0 0 0 #0004;
+  animation: l2 1.5s infinite linear;
+  position: relative;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 #0004;
+  animation: inherit;
+  animation-delay: -0.5s;
+}
+.loader:after {
+  animation-delay: -1s;
+}
+@keyframes l2 {
+    100% {box-shadow: 0 0 0 40px #0000}
+}
+
     #preloader {
     position: fixed;
     top: 0;
@@ -162,22 +189,7 @@
 <body>
 
 <!-- <div id="preloader">
-    <div class="mb-4">
-      <a href="/" class="app-brand-link">
-        <span class="app-brand-logo demo">
-          @if (!empty($global_setting->logo))
-            <img src="{{ asset('Care_VMA.webp') }}" alt="Site Logo" style="height:auto;width:150px;">
-          @else
-            <img src="{{ asset('Care_VMA.webp') }}" alt="Default Logo" style="height:auto;width:150px;"> @endif
-        </span>
-      </a>
-    </div>
-
-    <div id="loader-2">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
+<div class="loader"></div>
 </div> -->
 
     <div class="layout-wrapper layout-content-navbar">

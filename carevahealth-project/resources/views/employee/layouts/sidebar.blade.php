@@ -1,50 +1,47 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu">
-          <div class="app-brand demo">
-            <a href="{{ route('employee.dashboard') }}" class="app-brand-link">
-              <span class="app-brand-logo demo">
-               
+  <div class="app-brand demo">
+    <a href="/" class="app-brand-link">
+      <span class="app-brand-logo demo">
+        @if(!empty($global_setting->logo))
+          <img src="{{ asset('Care_VMA-favicon.png') }}" alt="Site Logo" style="height:auto;width:30px;">
+        @else
+          <img src="{{ asset('Care_VMA-favicon.png') }}" alt="Default Logo" style="height:auto;width:30px;">
+        @endif
 
-              </span>
-            </a>
+      </span>
+    </a>
+  </div>
 
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
-              <i class="icon-base ti menu-toggle-icon d-none d-xl-block"></i>
-              <i class="icon-base ti tabler-x d-block d-xl-none"></i>
-            </a>
-          </div>
+  <div class="menu-inner-shadow"></div>
 
-          <div class="menu-inner-shadow"></div>
+  <ul class="menu-inner py-1">
+    <li class='menu-item {{ request()->routeIs("employee.dashboard") ? "active" : "" }}'>
+      <a type="button" data-bs-toggle="tooltip" data-bs-placement="right" class='menu-link custom-tooltip'
+        href="{{ route('employee.dashboard') }}" title="Dashboard">
+        <i class="menu-icon icon-base ti tabler-home"></i>
+      </a>
+    </li>
 
-          <ul class="menu-inner py-1">
+    <li class='menu-item {{ request()->routeIs("employee.profile.edit") ? "active" : "" }}'>
+      <a type="button" data-bs-toggle="tooltip" data-bs-placement="right" class='menu-link custom-tooltip'
+        href="{{ route('employee.profile.edit') }}" title="My Profile">
+        <i class="menu-icon icon-base ti tabler-user"></i>
+      </a>
+    </li>
 
-            <li class="menu-item">
-              <a href="{{ route('employee.dashboard') }}" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-smart-home"></i>
-                <div data-i18n="Home">Home</div>
-              </a>
-            </li>
+    <li class='menu-item {{ request()->routeIs("my.attendance") ? "active" : "" }}'>
+      <a type="button" data-bs-toggle="tooltip" data-bs-placement="right" class='menu-link custom-tooltip'
+        href="{{ route('my.attendance') }}" title="Attendance">
+        <i class="menu-icon icon-base ti tabler-calendar-week"></i>
+      </a>
+    </li>
 
-            
-            <li class="menu-item">
-              <a href="{{ route('employee.profile.edit') }}" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-id"></i>
-                <div data-i18n="My Profile">My Profile</div>
-              </a>
-            </li>
+    <li class='menu-item {{ request()->routeIs("employee.setting") ? "active" : "" }}'>
+      <a type="button" data-bs-toggle="tooltip" data-bs-placement="right" class='menu-link custom-tooltip'
+        href="{{ route('employee.setting') }}" title="Setting">
+        <i class="menu-icon icon-base ti tabler-settings"></i>
+      </a>
+    </li>
 
-            <li class="menu-item">
-              <a href="{{ route('my.attendance') }}" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-calendar-week"></i>
-                <div data-i18n="My Attendance">My Attendance</div>
-              </a>
-            </li>
-
-            <li class="menu-item">
-              <a href="{{ route('employee.setting') }}" class="menu-link">
-                <i class="icon-base ti tabler-settings me-3 icon-md"></i>
-                <div data-i18n="Setting">Setting</div>
-              </a>
-            </li>
-
-          </ul>
-        </aside>
+  </ul>
+</aside>

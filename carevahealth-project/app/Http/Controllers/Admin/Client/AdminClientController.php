@@ -135,21 +135,21 @@ class AdminClientController extends Controller
         return redirect()->back()->with('success', 'Client has been added successfully!');
     }
 
-    public function client_schedule($id)
+    public function assign_va($id)
     {
         $client = Client::with('user')->findOrFail($id);
         $employees = Employee::all();
 
 
-        return view('admin.client.schedule', compact(['client','employees']));
+        return view('admin.client.assign_va', compact(['client','employees']));
     }
 
-    public function assign_employee(Request $request)
-    {
-        $clients = Client::all();
-        $employees = Employee::all();
-        return view('admin.client.assign_employee', compact(['clients','employees']));
-    }
+    // public function assign_employee(Request $request)
+    // {
+    //     $clients = Client::all();
+    //     $employees = Employee::all();
+    //     return view('admin.client.assign_employee', compact(['clients','employees']));
+    // }
 
     public function get_client_details($id)
     {
@@ -163,19 +163,22 @@ class AdminClientController extends Controller
         return response()->json($employee);
     }
 
-    public function assign_va($id)
+    public function client_schedule($id)
     {
         $client = Client::with(['employeeSchedules.employee'])->findOrFail($id);
 
         $employees = Employee::all();
-        return view('admin.client.assign_va', compact(['client','employees']));
+        return view('admin.client.schedule', compact(['client','employees']));
     }
 
-    public function client_profile($id)
+    public function client_profile($id, CountryList $countryList)
     {
         $client = Client::findOrFail($id);
+        $countries = $countryList->getList('en');
+        $contractTypes = ContractType::all();
+        $services = Service::all();
 
-        return view('admin.client.profile',compact('client'));
+        return view('admin.client.profile',compact(['client','countries','contractTypes','services']));
     }
 
     public function daily_report(Request $request)
