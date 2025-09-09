@@ -76,3 +76,29 @@ ul.service-list {
     padding: 4px 0px;
     color: #313131 !important;
 }
+
+.employee-avatar {
+    position: relative;
+    display: inline-block;
+}
+.online-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+.bg-success { background: #28a745; } /* online green */
+.bg-secondary { background: #6c757d; } /* offline gray */
+
+.btn-google {
+    background-color: #DB4437;
+    color: #fff;
+}
+
+.btn-google:hover {
+    background-color: #c13525;
+    color: #fff;
+}

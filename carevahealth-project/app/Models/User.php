@@ -20,7 +20,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'last_seen_at',
         'password',
+        'role'
     ];
 
     /**
@@ -43,6 +45,21 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_seen_at' => 'datetime',
         ];
     }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+    public function isOnline()
+    {
+        return $this->last_seen_at && $this->last_seen_at->gt(now()->subMinutes(5));
+    }
+    public function client()
+    {
+        return $this->hasOne(Client::class);
+    }
+
 }

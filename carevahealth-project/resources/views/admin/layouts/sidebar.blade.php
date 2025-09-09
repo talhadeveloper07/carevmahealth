@@ -3,108 +3,129 @@
             <a href="/" class="app-brand-link">
               <span class="app-brand-logo demo">
                 @if(!empty($global_setting->logo))
-                <img src="" alt="Site Logo" style="height: 60px;">
+                <img src="{{ asset('Care_VMA-favicon.png') }}" alt="Site Logo" style="height:auto;width:30px;">
               @else
-                <img src="" alt="Default Logo" style="height: 60px;">
+                <img src="{{ asset('Care_VMA-favicon.png') }}" alt="Default Logo" style="height:auto;width:30px;">
               @endif
 
               </span>
-            </a>
-
-            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
-              <i class="icon-base ti menu-toggle-icon d-none d-xl-block"></i>
-              <i class="icon-base ti tabler-x d-block d-xl-none"></i>
             </a>
           </div>
 
           <div class="menu-inner-shadow"></div>
 
-          <ul class="menu-inner py-1">
-
           
-            <!-- e-commerce-app menu start -->
-            <li class="menu-item">
-              <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-shield-cog"></i>
-                <div data-i18n="Services">Services</div>
+
+          <ul class="menu-inner py-1">
+          <li class='menu-item {{ request()->routeIs("admin.dashboard") ? "active" : "" }}'>
+              <a
+                  type="button"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="right"
+                  class='menu-link custom-tooltip'
+                  href="{{ route('admin.dashboard') }}"
+                  title="Dashboard">
+                  <i class="menu-icon icon-base ti tabler-home"></i>
+              </a>
+          </li>
+
+          <li class='menu-item {{ request()->routeIs("all.employees") ? "active" : "" }}'>
+              <a
+                  type="button"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="right"
+                  class='menu-link custom-tooltip'
+                  href="{{ route('all.employees') }}"
+                  title="Employees">
+                  <i class="menu-icon icon-base ti tabler-users"></i>
+              </a>
+          </li>
+
+          <li class='menu-item {{ request()->routeIs("admin.attendance") ? "active" : "" }}'>
+              <a
+                  type="button"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="right"
+                  class='menu-link custom-tooltip'
+                  href="{{ route('admin.attendance') }}"
+                  title="Attendance">
+                  <i class="menu-icon icon-base ti tabler-calendar-week"></i>
+              </a>
+          </li>
+
+          <li class='menu-item {{ request()->routeIs("all.clients") ? "active" : "" }}'>
+              <a
+                  type="button"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="right"
+                  class='menu-link custom-tooltip'
+                  href="{{ route('all.clients') }}"
+                  title="Clients">
+                  <i class="menu-icon icon-base ti tabler-users"></i>
+              </a>
+          </li>
+
+
+            <li class='menu-item {{ request()->routeIs("departments.index") ? "active" : "" }}'>
+              <a
+                type="button"
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                class='menu-link custom-tooltip'
+                href="{{ route('departments.index') }}"
+                title="Employee Setting">
+                <i class="menu-icon icon-base ti tabler-settings"></i>
               </a>
             </li>
-            <li class="menu-item">
-              <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-map"></i>
-                <div data-i18n="Zipcodes">Zipcodes</div>
+
+            <li class='menu-item'>
+              <a
+                type="button"
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                class='menu-link custom-tooltip'
+                href="{{ route('all.clients') }}"
+                title="Client Setting">
+                <i class="menu-icon icon-base ti tabler-settings"></i>
               </a>
             </li>
-            
+
+            <li class='menu-item {{ request()->routeIs("admin.invoices") ? "active" : "" }}'>
+              <a
+                type="button"
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                class='menu-link custom-tooltip'
+                href="{{ route('admin.invoices') }}"
+                title="Invoices">
+                <i class="menu-icon icon-base ti tabler-file-dollar"></i>
+              </a>
+            </li>
+
+
+
+
+
+
             <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base ti tabler-shopping-cart"></i>
-                <div data-i18n="Products">Products</div>
+              <a href="#" class="menu-link ">
+                <i class="menu-icon icon-base ti tabler-user-square-rounded"></i>
+                <div data-i18n="Clients">Clients</div>
               </a>
                 <ul class="menu-sub">
-                    <li class="menu-item">
-                      <a href="#" class="menu-link">
-                        <div data-i18n="Product List">Product List</div>
-                      </a>
-                    </li>
-                    <li class="menu-item">
-                      <a href="#" class="menu-link">
-                        <div data-i18n="Add Product">Add Product</div>
-                      </a>
-                    </li>
-                    <li class="menu-item">
-                      <a href="app-ecommerce-category-list.html" class="menu-link">
-                        <div data-i18n="Category List">Category List</div>
-                      </a>
-                    </li>
-                  </ul>
-              
-            </li>
 
-            <li class="menu-item">
-              <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-users"></i>
-                <div data-i18n="Employees">Employees</div>
-              </a>
+                  <li class="menu-item">
+                    <a href="{{ route('all.clients') }}" class="menu-link">
+                      <div data-i18n="All Clients">All Clients</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a href="{{ route('add.client') }}" class="menu-link">
+                      <div data-i18n="Add New Client">Add New Client</div>
+                    </a>
+                  </li>
+                </ul>
             </li>
-
-            <li class="menu-item">
-              <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-users-group"></i>
-                <div data-i18n="Customers">Customers</div>
-              </a>
-            </li>
-
-            <li class="menu-item">
-              <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-calendar-week"></i>
-                <div data-i18n="Calendar">Calendar</div>
-              </a>
-            </li>
-
-            <li class="menu-item">
-              <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-calendar"></i>
-                <div data-i18n="Appointments">Appointments</div>
-              </a>
-            </li>
-
-            <li class="menu-item">
-            <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-ticket"></i>
-                <div data-i18n="Promotions">Promotions</div>
-              </a>
-            </li>
-
-            <li class="menu-item">
-            <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ti tabler-settings"></i>
-                <div data-i18n="Setting">Setting</div>
-              </a>
-            </li>
-            
-
-            <!-- e-commerce-app menu end -->
           
           </ul>
         </aside>
