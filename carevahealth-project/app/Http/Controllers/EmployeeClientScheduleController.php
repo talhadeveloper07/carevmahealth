@@ -10,7 +10,7 @@ use App\Models\Client;
 use App\Models\Attendance;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class EmployeeClientScheduleController extends Controller
 {
@@ -128,54 +128,67 @@ class EmployeeClientScheduleController extends Controller
     public function generate(Request $request)
     {
         $request->validate([
-            'employee_id' => 'required|exists:employees,id',
-            'client_id'   => 'required|exists:clients,id',
-            'month'       => 'required|date_format:Y-m'
+            'client_id' => 'required|exists:clients,id',
+            'date_from' => 'required|date',
+            'date_to'   => 'required|date|after_or_equal:date_from',
         ]);
     
-        $employeeId = $request->employee_id;
-        $clientId   = $request->client_id;
-        $start      = Carbon::createFromFormat('Y-m', $request->month)->startOfMonth();
-        $end        = $start->copy()->endOfMonth();
+        $clientId = $request->client_id;
+        $start    = Carbon::parse($request->date_from)->startOfDay();
+        $end      = Carbon::parse($request->date_to)->endOfDay();
     
-        // Check attendance
-        $attendance = Attendance::where('employee_id', $employeeId)
-            ->whereBetween('date', [$start, $end])
-            ->get();
+        $client = Client::findOrFail($clientId);
     
-        if ($attendance->isEmpty()) {
+        // Fetch all employees linked with this client
+        $employees = Employee::whereHas('clients', function ($q) use ($clientId) {
+            $q->where('client_id', $clientId);
+        })->get();
+    
+        if ($employees->isEmpty()) {
             return response()->json([
-                'error' => 'No attendance found for this employee in selected month.'
+                'error' => 'No employees found for this client.'
             ], 422);
         }
     
-        // Calculate hours from attendance
-        $totalMinutes   = $attendance->sum('total_minutes');
-        $totalOvertime  = $attendance->sum('overtime'); // assuming minutes
-        $totalHours     = round(($totalMinutes + $totalOvertime) / 60, 2);
+        $results = [];
     
-        // Calculate salary
-        $employee = Employee::findOrFail($employeeId);
-        $client = Client::findOrFail($clientId);
-        $salaryAmount = $totalHours * $client->per_hour_charges;
+        foreach ($employees as $employee) {
+            // Attendance for this employee in the range
+            $attendance = Attendance::where('employee_id', $employee->id)
+                ->whereBetween('date', [$start, $end])
+                ->get();
     
-        // Store in salaries table (update if already exists)
-        $salary = EmployeeSalary::updateOrCreate(
-            [
-                'employee_id' => $employeeId,
-                'client_id'   => $clientId,
-                'period_start'=> $start,
-                'period_end'  => $end,
-            ],
-            [
-                'total_hours'   => $totalHours,
-                'salary_amount' => $salaryAmount,
-            ]
-        );
+            if ($attendance->isEmpty()) {
+                continue;
+            }
+    
+            // Totals
+            $totalMinutes  = $attendance->sum('total_minutes');
+            $totalOvertime = $attendance->sum('overtime');    // minutes
+            $totalLate     = $attendance->sum('break_taken'); // or replace with "late_minutes" if exists
+            $regularHours    = round(($totalMinutes + $totalOvertime) / 60, 2);
+            $overtimeHours = round($totalOvertime / 60, 2);
+            $totalHours    = $regularHours + $overtimeHours;
+    
+            $salaryAmount = $totalHours * $client->per_hour_charges;
+    
+            $results[] = [
+                'employee_id'    => $employee->id,
+                'employee_name'  => $employee->first_name . ' ' . $employee->last_name,
+                'regular_hours'   => $regularHours,
+                'overtime_hours'  => $overtimeHours,
+                'total_late'     => $totalLate,
+                'total_overtime' => $totalOvertime,
+                'salary_amount'  => $salaryAmount,
+                'period_start' => $request->date_from,
+                'period_end' => $request->date_to,
+            ];
+
+        }
     
         return response()->json([
-            'total_hours'   => $salary->total_hours,
-            'salary_amount' => $salary->salary_amount,
+            'client_name' => $client->name,
+            'employees'   => $results
         ]);
     }
     

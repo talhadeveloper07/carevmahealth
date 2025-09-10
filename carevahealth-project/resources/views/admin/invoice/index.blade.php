@@ -9,7 +9,7 @@
                 <p>Add client employee invoices details.</p>
             </div>
             <div class="col-md-5 text-end">
-                <a href="" class='btn cstm-btn-link text-white'>Add</a>
+                <a href="{{ route('admin.add.invoice') }}" class='btn cstm-btn-link text-white'>Add</a>
             </div>
 
             <div class="col-md-10 mt-5">

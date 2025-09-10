@@ -13,6 +13,10 @@ class EmployeeSalary extends Model
         'salary_amount',
         'period_start',
         'period_end',
+        'invoice_number',
+        'total_late',
+        'total_overtime',
+        'invoice_number'
     ];
 
     // Relationships

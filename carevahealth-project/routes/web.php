@@ -73,7 +73,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     // Invoice Routes
     Route::post('/employee-salaries/generate', [EmployeeClientScheduleController::class, 'generate'])->name('employee_salaries.generate');
+    Route::post('employee-salaries/store-invoice', [InvoicesController::class, 'storeInvoice'])->name('employee_salaries.storeInvoice');
     Route::get('invoices',[InvoicesController::class,'index'])->name('admin.invoices');
+    Route::get('add-invoice',[InvoicesController::class,'add_invoice'])->name('admin.add.invoice');
 
 
     // Employee Routes
