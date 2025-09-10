@@ -39,6 +39,10 @@ Route::post('/complete-profile', [EmployeeController::class, 'submitCompleteProf
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard',[AdminDashboardController::class,'index'])->name('admin.dashboard');
+
+    Route::get('/attendance/stats', [AdminDashboardController::class, 'getAttendanceStats'])->name('attendance.stats');
+    Route::get('live-users', [AdminDashboardController::class, 'todayLiveUsers'])->name('live.users');
+    Route::get('live-users/stats', [AdminDashboardController::class, 'todayLiveUsersJson'])->name('live.users.stats');
   
     // Employee Options Routes
     Route::resource('departments', DepartmentController::class);
@@ -76,6 +80,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('employee-salaries/store-invoice', [InvoicesController::class, 'storeInvoice'])->name('employee_salaries.storeInvoice');
     Route::get('invoices',[InvoicesController::class,'index'])->name('admin.invoices');
     Route::get('add-invoice',[InvoicesController::class,'add_invoice'])->name('admin.add.invoice');
+    Route::get('invoices/{id}/pdf', [InvoicesController::class, 'generateInvoicePdf'])->name('invoices.pdf');
 
 
     // Employee Routes

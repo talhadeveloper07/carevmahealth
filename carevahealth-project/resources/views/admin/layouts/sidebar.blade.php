@@ -29,6 +29,18 @@
               </a>
           </li>
 
+          <li class='menu-item {{ request()->routeIs("live.users") ? "active" : "" }}'>
+              <a
+                type="button"
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                class='menu-link custom-tooltip'
+                href="{{ route('live.users') }}"
+                title="Live Employees">
+                <i class="menu-icon icon-base ti tabler-screen-share"></i>
+              </a>
+            </li>
+
           <li class='menu-item {{ request()->routeIs("all.employees") ? "active" : "" }}'>
               <a
                   type="button"

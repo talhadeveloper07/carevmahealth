@@ -101,6 +101,11 @@ class Employee extends Model
         return $this->belongsTo(ReportingManager::class);
     }
 
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'employee_id');
+    }
+
     // 🔹 Accessors
     public function getFullNameAttribute()
     {

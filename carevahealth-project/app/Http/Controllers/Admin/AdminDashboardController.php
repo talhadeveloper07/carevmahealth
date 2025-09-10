@@ -12,17 +12,14 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        // 🔹 Total counts
+       
         $clientsCount = Client::count();
         $employeesCount = Employee::count();
 
-        // 🔹 Last 30 days ka range
         $last30Days = Carbon::now()->subDays(30);
 
-        // 🔹 Clients added in last 30 days
         $newClientsLast30 = Client::where('created_at', '>=', $last30Days)->count();
 
-        // 🔹 Employees added in last 30 days
         $newEmployeesLast30 = Employee::where('created_at', '>=', $last30Days)->count();
 
         return view('admin.dashboard.index', compact(
@@ -34,25 +31,121 @@ class AdminDashboardController extends Controller
     }
 
     // 🔹 Attendance Stats (Ajax ke liye)
-    public function getAttendanceStats()
+public function getAttendanceStats()
+{
+    $today = now()->toDateString(); 
+
+
+    $checkedIn = Attendance::whereRaw('DATE(`date`) = ?', [$today])
+        ->whereNotNull('clock_in')
+        ->whereNull('clock_out')
+        ->count();
+
+
+
+    return response()->json([
+        'checkedIn'  => $checkedIn,
+   
+    ]);
+}
+
+  public function todayLiveUsers()
     {
-        $today = Carbon::today();
+        $today = Carbon::now()->toDateString();
 
-        // Aaj check-in (clock_in hai, clock_out NULL hai)
-        $checkedIn = Attendance::whereDate('date', $today)
-            ->whereNotNull('clock_in')
-            ->whereNull('clock_out')
-            ->count();
+        $employees = Employee::with(['attendances' => function ($query) use ($today) {
+            $query->whereDate('date', $today);
+        }])->get();
 
-        // Aaj check-out (clock_in + clock_out dono filled hain)
-        $checkedOut = Attendance::whereDate('date', $today)
-            ->whereNotNull('clock_in')
-            ->whereNotNull('clock_out')
-            ->count();
+        $liveUsers = [];
+        $checkedOutUsers = [];
+        $offlineUsers = [];
+        $lateUsers = [];
+
+        foreach ($employees as $employee) {
+            $attendance = $employee->attendances->first();
+
+            if ($attendance) {
+                if ($attendance->clock_in && !$attendance->clock_out) {
+            
+                    $liveUsers[] = $employee;
+
+                    if ($attendance->clock_in && $attendance->clock_in->format('H:i:s') > "09:00:00") {
+                        $lateUsers[] = $employee;
+                    }
+                } elseif ($attendance->clock_in && $attendance->clock_out) {
+              
+                    $checkedOutUsers[] = $employee;
+                }
+            } else {
+          
+                $offlineUsers[] = $employee;
+            }
+        }
+
+        return view('admin.live_users', compact(
+            'liveUsers',
+            'checkedOutUsers',
+            'offlineUsers',
+            'lateUsers'
+        ));
+    }
+
+    public function todayLiveUsersJson()
+    {
+        $today = Carbon::now()->toDateString();
+
+        $employees = Employee::with(['attendances' => function ($query) use ($today) {
+            $query->whereDate('date', $today);
+        }])->get();
+
+        $liveUsers = [];
+        $checkedOutUsers = [];
+        $offlineUsers = [];
+        $lateUsers = [];
+
+        foreach ($employees as $employee) {
+            $attendance = $employee->attendances->first();
+
+            if ($attendance) {
+                $clockInReadable = $attendance->clock_in ? $attendance->clock_in->format('h:i A') : null;
+                $clockOutReadable = $attendance->clock_out ? $attendance->clock_out->format('h:i A') : null;
+
+                if ($attendance->clock_in && !$attendance->clock_out) {
+                    $liveUsers[] = [
+                        'id' => $employee->id,
+                        'full_name' => $employee->full_name,
+                        'clock_in' => $clockInReadable,
+                    ];
+
+                    if ($attendance->clock_in && $attendance->clock_in->format('H:i:s') > "09:00:00") {
+                        $lateUsers[] = [
+                            'id' => $employee->id,
+                            'full_name' => $employee->full_name,
+                            'clock_in' => $clockInReadable,
+                        ];
+                    }
+                } elseif ($attendance->clock_in && $attendance->clock_out) {
+                    $checkedOutUsers[] = [
+                        'id' => $employee->id,
+                        'full_name' => $employee->full_name,
+                        'clock_out' => $clockOutReadable,
+                    ];
+                }
+            } else {
+                $offlineUsers[] = [
+                    'id' => $employee->id,
+                    'full_name' => $employee->full_name,
+                ];
+            }
+        }
 
         return response()->json([
-            'checkedIn' => $checkedIn,
-            'checkedOut' => $checkedOut,
+            'liveUsers' => $liveUsers,
+            'checkedOutUsers' => $checkedOutUsers,
+            'offlineUsers' => $offlineUsers,
+            'lateUsers' => $lateUsers,
         ]);
     }
+
 }

@@ -37,13 +37,43 @@
         <div class="col-md-10">
                 <div class="nav-align-left">
                     <div class="custom-card-body w-100">
-                   
-
+                    <table class="table table-bordered" id="invoices-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Invoice #</th>
+                                <th>Client</th>
+                                <th>Period</th>
+                                <th>Total Hours</th>
+                                <th>Total Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
                     </div>
                 </div>
         </div>
     </div>
 </div>
 
+
+<script>
+$(function () {
+    $('#invoices-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{{ route('admin.invoices') }}',
+        columns: [
+            { data: 'id', name: 'id' },
+            { data: 'invoice_number', name: 'invoice_number' },
+            { data: 'client', name: 'client.name' },
+            { data: 'period', name: 'period', orderable: false, searchable: false },
+            { data: 'total_hours', name: 'total_hours' },
+            { data: 'total_amount', name: 'total_amount' },
+            { data: 'action', name: 'action', orderable: false, searchable: false },
+        ]
+    });
+});
+</script>
 
 @endsection
