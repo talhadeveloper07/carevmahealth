@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Events\Notifications;
+use Illuminate\Support\Facades\Hash;
 
 
 class ProfileController extends Controller
@@ -273,7 +274,26 @@ class ProfileController extends Controller
 
     public function settings(Request $request)
     {
-        return view('employee.setting.index');
+        $employee = Employee::where('user_id',auth()->user()->id)->first();
+
+        return view('employee.setting.index',compact('employee'));
+    }
+
+    public function change_password(Request $request)
+    {
+        $employee = Employee::where('user_id',auth()->user()->id)->first();
+
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $employee->user->update([
+            'password' => Hash::make($request->password),
+        ]);
+        $employee->password = Hash::make($request->password);
+        $employee->save();
+
+        return back()->with('success', 'Password updated successfully!');
     }
 
 }

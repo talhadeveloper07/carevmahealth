@@ -9,7 +9,16 @@
             <h4 class='mb-0 custom-page-title'>Employees</h4>
             <p>View, add, edit and delete employees details.</p>
         </div>
-        <div class="col-md-5 text-end">
+        <div class="col-md-5 text-end d-flex align-items-center justify-content-end gap-2">
+        <div class="btn-group">
+            <button type="button" class="options-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Options
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><strong style="font-size:13px;font-weight:700;color:black;">Export</strong></li>
+                <div id="exportDropdown"></div>
+            </ul>
+        </div>
             <a href="{{ route('add.employee') }}" class='btn cstm-btn-link text-white'>Add</a>
         </div>
     </div>
@@ -71,12 +80,14 @@ $(function() {
     var table = $('#employees-table').DataTable({
     processing: true,
     serverSide: true,
-    dom: 'Bfrtip', // add buttons container
-        buttons: [
-            'csv',        // CSV export
-            'excel',      // Excel expor
-            'print'       // Print view
-        ],
+    dom: 'Bfrtip',
+    buttons: [
+        { extend: 'copyHtml5', text: '<i class="ti tabler-copy me-1"></i> Copy' },
+        { extend: 'excelHtml5', text: '<i class="ti tabler-file-spreadsheet me-1"></i> Excel' },
+        { extend: 'csvHtml5', text: '<i class="ti tabler-file me-1"></i> CSV' },
+        { extend: 'pdfHtml5', text: '<i class="ti tabler-file-text me-1"></i> PDF' },
+        { extend: 'print', text: '<i class="ti tabler-printer me-1"></i> Print'}
+    ],
     ajax: {
         url: '{{ route("all.employees") }}',
         data: function(d) {
@@ -95,6 +106,8 @@ $(function() {
         { data: 'actions', name: 'actions', orderable: false, searchable: false },
     ]
     });
+
+    table.buttons().container().appendTo('#exportDropdown');
 
     // Redraw on filter change
     $('#status-filter').change(function() {

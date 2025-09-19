@@ -5,12 +5,11 @@
 
         <div class='row d-flex justify-content-center mt-5 align-items-center mb-5'>
             <div class="col-md-5 custom-title-col">
-                <h4 class='mb-0 custom-page-title'>Client Profile - {{ $client->name }}</h4>
-                <p>Add client details.</p>
+                <h4 class='mb-0 custom-page-title'>Invoices</h4>
+                <p>Add client employee invoices details.</p>
             </div>
             <div class="col-md-5 text-end">
-                <a href="{{ route('add.client') }}" class='btn cstm-btn-link-2 text-white'>Add</a>
-                <a href="{{ route('all.clients') }}" class='btn cstm-btn-link text-white'>Clients</a>
+                <a href="{{ route('admin.add.invoice') }}" class='btn cstm-btn-link text-white'>Add</a>
             </div>
 
             <div class="col-md-10 mt-5">
@@ -37,20 +36,20 @@
     <div class="row d-flex justify-content-center mt-5 align-items-center mb-5">
         <div class="col-md-10">
                 <div class="nav-align-left">
-                    @include('admin.client.profile_layouts.nav')
                     <div class="custom-card-body w-100">
-                        <table class="table" id="attendanceTable" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Employee</th>
-                                    <th>Date</th>
-                                    <th>Clock In</th>
-                                    <th>Clock Out</th>
-                                    <th>Total Hours</th>
-                                    <th>Late Minutes</th>
-                                </tr>
-                            </thead>
-                        </table>
+                    <table class="table table-bordered" id="invoices-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Invoice #</th>
+                                <th>Client</th>
+                                <th>Period</th>
+                                <th>Total Hours</th>
+                                <th>Total Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
                     </div>
                 </div>
         </div>
@@ -60,17 +59,18 @@
 
 <script>
 $(function () {
-    $('#attendanceTable').DataTable({
+    $('#invoices-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: '{{ route('daily.report', $client->id) }}',
+        ajax: '{{ route('admin.invoices') }}',
         columns: [
-            { data: 'employee_name', name: 'employee_name' },
-            { data: 'date', name: 'date' },
-            { data: 'clock_in', name: 'clock_in' },
-            { data: 'clock_out', name: 'clock_out' },
-            { data: 'total_minutes', name: 'total_minutes' },
-            { data: 'late_minutes', name: 'late_minutes' },
+            { data: 'id', name: 'id' },
+            { data: 'invoice_number', name: 'invoice_number' },
+            { data: 'client', name: 'client.name' },
+            { data: 'period', name: 'period', orderable: false, searchable: false },
+            { data: 'total_hours', name: 'total_hours' },
+            { data: 'total_amount', name: 'total_amount' },
+            { data: 'action', name: 'action', orderable: false, searchable: false },
         ]
     });
 });

@@ -22,6 +22,9 @@ Route::middleware(['auth', 'employee' ,'profile.complete'])->prefix('employee')-
     ->name('attendance.requestChange');
 
     Route::get('settings',[ProfileController::class,'settings'])->name('employee.setting');
+
+    Route::put('change-password', [ProfileController::class, 'change_password'])
+    ->name('employees.change-password');
    
 });
 
