@@ -10,9 +10,10 @@
             <p>View, add, edit and delete employees details.</p>
         </div>
         <div class="col-md-5 text-end d-flex align-items-center justify-content-end gap-2">
+            <a href="{{ route('departments.index') }}" class="cstm-btn-link-2 text-white btn">Options</a>
         <div class="btn-group">
             <button type="button" class="options-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                Options
+                Export
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><strong style="font-size:13px;font-weight:700;color:black;">Export</strong></li>

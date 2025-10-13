@@ -26,6 +26,13 @@
     .toast-noti.offline {
         background: #d9534f;
     }
+    .time-badge {
+    border: 1px solid gray;
+    border-radius: 50px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 900;
+    }
 </style>
 <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
     id="layout-navbar">
@@ -47,94 +54,9 @@
         <ul class="navbar-nav flex-row align-items-center ms-md-auto">
 
             <li>
-                <span id="live-datetime" class="badge bg-info"></span>
+                <span id="live-datetime" class="time-badge mx-2"></span>
             </li>
-            <!-- Quick links  -->
-            <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown">
-                <a class="" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                    aria-expanded="false">
-                    <i class="icon-base ti tabler-layout-grid-add icon-22px text-heading"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-end p-0">
-                    <div class="dropdown-menu-header border-bottom">
-                        <div class="dropdown-header d-flex align-items-center py-3">
-                            <h6 class="mb-0 me-auto">Shortcuts</h6>
-                            <a href="javascript:void(0)"
-                                class="dropdown-shortcuts-add py-2 btn btn-text-secondary rounded-pill btn-icon"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add shortcuts"><i
-                                    class="icon-base ti tabler-plus icon-20px text-heading"></i></a>
-                        </div>
-                    </div>
-                    <div class="dropdown-shortcuts-list scrollable-container">
-                        <div class="row row-bordered overflow-visible g-0">
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                                    <i class="icon-base ti tabler-calendar icon-26px text-heading"></i>
-                                </span>
-                                <a href="app-calendar.html" class="stretched-link">Calendar</a>
-                                <small>Appointments</small>
-                            </div>
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                                    <i class="icon-base ti tabler-file-dollar icon-26px text-heading"></i>
-                                </span>
-                                <a href="app-invoice-list.html" class="stretched-link">Invoice App</a>
-                                <small>Manage Accounts</small>
-                            </div>
-                        </div>
-                        <div class="row row-bordered overflow-visible g-0">
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                                    <i class="icon-base ti tabler-user icon-26px text-heading"></i>
-                                </span>
-                                <a href="app-user-list.html" class="stretched-link">User App</a>
-                                <small>Manage Users</small>
-                            </div>
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                                    <i class="icon-base ti tabler-users icon-26px text-heading"></i>
-                                </span>
-                                <a href="app-access-roles.html" class="stretched-link">Role Management</a>
-                                <small>Permission</small>
-                            </div>
-                        </div>
-                        <div class="row row-bordered overflow-visible g-0">
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                                    <i class="icon-base ti tabler-device-desktop-analytics icon-26px text-heading"></i>
-                                </span>
-                                <a href="index.html" class="stretched-link">Dashboard</a>
-                                <small>User Dashboard</small>
-                            </div>
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                                    <i class="icon-base ti tabler-settings icon-26px text-heading"></i>
-                                </span>
-                                <a href="pages-account-settings-account.html" class="stretched-link">Setting</a>
-                                <small>Account Settings</small>
-                            </div>
-                        </div>
-                        <div class="row row-bordered overflow-visible g-0">
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                                    <i class="icon-base ti tabler-help-circle icon-26px text-heading"></i>
-                                </span>
-                                <a href="pages-faq.html" class="stretched-link">FAQs</a>
-                                <small>FAQs & Articles</small>
-                            </div>
-                            <div class="dropdown-shortcuts-item col">
-                                <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                                    <i class="icon-base ti tabler-square icon-26px text-heading"></i>
-                                </span>
-                                <a href="modal-examples.html" class="stretched-link">Modals</a>
-                                <small>Useful Popups</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <!-- Quick links -->
-
+           
             <!-- Notification -->
             <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
                 <a class="" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside"
@@ -192,6 +114,9 @@
                         @if (Auth::user()->profile_image)
                             <img src="{{ asset('storage/' . Auth::user()->profile_image) }}" alt=""
                                 class="rounded-circle " style="object-fit: cover" width="100">
+                        @else
+                        <img src="{{ asset('profile.png') }}" alt=""
+                                class="rounded-circle " style="object-fit: cover" width="100">
                         @endif
                     </div>
                 </a>
@@ -204,6 +129,9 @@
                                         @if (Auth::user()->profile_image)
                                             <img src="{{ asset('storage/' . Auth::user()->profile_image) }}"
                                                 alt="" class="rounded-circle" width="100">
+                                        @else
+                                        <img src="{{ asset('profile.png') }}" alt=""
+                                                class="rounded-circle " style="object-fit: cover" width="100">
                                         @endif
                                     </div>
                                 </div>
@@ -230,34 +158,9 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="pages-account-settings-billing.html">
-                            <span class="d-flex align-items-center align-middle">
-                                <i class="flex-shrink-0 icon-base ti tabler-file-dollar me-3 icon-md"></i><span
-                                    class="flex-grow-1 align-middle">Billing</span>
-                                <span
-                                    class="flex-shrink-0 badge bg-danger d-flex align-items-center justify-content-center">4</span>
-                            </span>
-                        </a>
-                    </li>
-                    <li>
-                        <div class="dropdown-divider my-1 mx-n2"></div>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="pages-pricing.html">
-                            <i class="icon-base ti tabler-currency-dollar me-3 icon-md"></i><span
-                                class="align-middle">Pricing</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="pages-faq.html">
-                            <i class="icon-base ti tabler-question-mark me-3 icon-md"></i><span
-                                class="align-middle">FAQ</span>
-                        </a>
-                    </li>
-                    <li>
                         <div class="d-grid px-2 pt-2 pb-1">
 
-                            <a class="btn btn-sm btn-danger d-flex" href="{{ route('logout') }}"
+                            <a class="text-white cstm-btn-link d-flex" href="{{ route('logout') }}"
                                 onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                 <small class="align-middle">Logout</small>
@@ -563,7 +466,6 @@
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit',
         };
 
         document.getElementById('live-datetime').textContent =

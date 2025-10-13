@@ -77,19 +77,6 @@
               </a>
           </li>
 
-
-            <li class='menu-item {{ request()->routeIs("departments.index") ? "active" : "" }}'>
-              <a
-                type="button"
-                data-bs-toggle="tooltip"
-                data-bs-placement="right"
-                class='menu-link custom-tooltip'
-                href="{{ route('departments.index') }}"
-                title="Employee Setting">
-                <i class="menu-icon icon-base ti tabler-settings"></i>
-              </a>
-            </li>
-
             <li class='menu-item'>
               <a
                 type="button"

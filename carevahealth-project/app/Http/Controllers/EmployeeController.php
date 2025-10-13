@@ -118,7 +118,7 @@ class EmployeeController extends Controller
         $temporaryUrl = URL::temporarySignedRoute(
             'employee.completeProfile',
             now()->addMinutes(5),
-            ['email' => $user->email, 'token' => $token]
+            ['email' => $user->email, 'token' => $token, 'employee_id' => $employee->id]
         );
     
         DB::table('password_reset_tokens')->insert([
@@ -143,6 +143,37 @@ class EmployeeController extends Controller
     }
     
 
+    public function resendCompleteProfileEmail($id)
+    {
+        $employee = Employee::with('user')->findOrFail($id);
+        $user = $employee->user;
+
+        // generate new token
+        $token = Str::random(64);
+
+        $temporaryUrl = URL::temporarySignedRoute(
+            'employee.completeProfile',
+            now()->addMinutes(5),
+            ['email' => $user->email, 'token' => $token]
+        );
+
+        // store token (replace old if exists)
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $user->email],
+            [
+                'email' => $user->email,
+                'token' => Hash::make($token),
+                'created_at' => now(),
+            ]
+        );
+
+        // send email again
+        Mail::to($user->email)->send(new CompleteProfileMail($employee, $temporaryUrl));
+
+        return redirect()->back()->with('success', 'Profile completion email resent successfully!');
+    }
+
+
 
     public function showCompleteProfileForm(Request $request)
     {
@@ -163,7 +194,7 @@ class EmployeeController extends Controller
         $employee = Employee::where('email', $email)->firstOrFail();
         $temporaryUrl = $request->fullUrl();
 
-        return view('complete_profile.index', compact(['employee','temporaryUrl']));
+        return view('employee.after_register.index', compact(['employee','temporaryUrl']));
     }
 
     public function submitCompleteProfile(Request $request)
@@ -214,7 +245,7 @@ class EmployeeController extends Controller
                 ->addColumn('employee_info', function($e) {
                     $profilePic = $e->profile_picture 
                         ? asset('storage/' . $e->profile_picture) 
-                        : asset('assets/img/avatars/1.png'); // fallback if no image
+                        : asset('profile.png'); // fallback if no image
                     
                     $fullName = $e->first_name . ' ' . $e->last_name;
                 
@@ -257,6 +288,7 @@ class EmployeeController extends Controller
                 })
                 ->addColumn('actions', function($e) {
                     $editUrl = route('edit.employee', $e->id);
+                    $resendUrl = route('employee.resendProfileEmail', $e->id);
                 
                     return '
                     <div class="btn-group">
@@ -275,6 +307,14 @@ class EmployeeController extends Controller
                                    data-name="'. e($e->first_name . ' ' . $e->last_name) .'">
                                     <i class="ti tabler-trash me-1"></i> Delete
                                 </a>
+                            </li>
+                            <li>
+                                <form action="'. $resendUrl .'" method="POST" style="display:inline;">
+                                    '. csrf_field() .'
+                                    <button type="submit" class="dropdown-item text-warning">
+                                        <i class="ti tabler-mail me-1"></i> Resend Profile Email
+                                    </button>
+                                </form>
                             </li>
                         </ul>
                     </div>
@@ -382,3 +422,5 @@ class EmployeeController extends Controller
     }
 
 }
+
+

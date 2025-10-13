@@ -22,6 +22,13 @@
       </a>
     </li>
 
+    <li class='menu-item {{ request()->routeIs("employee.schedule") ? "active" : "" }}'>
+      <a type="button" data-bs-toggle="tooltip" data-bs-placement="right" class='menu-link custom-tooltip'
+        href="{{ route('employee.schedule') }}" title="My Schedule">
+        <i class="menu-icon icon-base ti tabler-calendar"></i>
+      </a>
+    </li>
+
     <li class='menu-item {{ request()->routeIs("employee.profile.edit") ? "active" : "" }}'>
       <a type="button" data-bs-toggle="tooltip" data-bs-placement="right" class='menu-link custom-tooltip'
         href="{{ route('employee.profile.edit') }}" title="My Profile">

@@ -116,6 +116,8 @@ public function getAttendanceStats()
                         'id' => $employee->id,
                         'full_name' => $employee->full_name,
                         'clock_in' => $clockInReadable,
+                        'profile_picture' => $employee->profile_picture
+
                     ];
 
                     if ($attendance->clock_in && $attendance->clock_in->format('H:i:s') > "09:00:00") {
@@ -123,12 +125,15 @@ public function getAttendanceStats()
                             'id' => $employee->id,
                             'full_name' => $employee->full_name,
                             'clock_in' => $clockInReadable,
+                            'profile_picture' => $employee->profile_picture
+
                         ];
                     }
                 } elseif ($attendance->clock_in && $attendance->clock_out) {
                     $checkedOutUsers[] = [
                         'id' => $employee->id,
                         'full_name' => $employee->full_name,
+                        'profile_picture' => $employee->profile_picture,
                         'clock_out' => $clockOutReadable,
                     ];
                 }

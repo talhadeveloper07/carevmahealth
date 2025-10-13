@@ -77,11 +77,11 @@
         <div class="content">
             <p>Hi {{ $employee->first_name }}!</p>
 
-            <p>We’ve created your account. To get started, click the button below and set your password.</p>
+            <p>We’ve created your account. To get started, click the button below and complete your profile.</p>
 
             <p><strong>Note:</strong> For security reasons, this link will expire after 24 hours. If it’s already expired, you can request a new one.</p>
 
-            <a href="{{ $temporaryUrl }}" class="btn">Choose Your Password</a>
+            <a href="{{ $temporaryUrl }}" class="btn">Complete Your Profile</a>
 
             <p>Thank you!<br>Care VMA Team</p>
         </div>
