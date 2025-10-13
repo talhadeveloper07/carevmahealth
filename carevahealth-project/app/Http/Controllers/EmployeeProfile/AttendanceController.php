@@ -49,7 +49,7 @@ class AttendanceController extends Controller
                 
     
             if (!$schedule) {
-                return back()->with('error', 'No scheduled shift found for today.');
+                return redirect()->back()->with('error', 'No scheduled shift found for today.');
             }
     
             // Assume employee has only one client for now
@@ -95,8 +95,7 @@ class AttendanceController extends Controller
                     'late_minutes'=> $lateMinutes,
                 ]
             );
-    
-            return back()->with('success', 'Clocked in successfully!');
+
 
             event(new Notifications([
                 'id' => $employee->id,
@@ -104,6 +103,11 @@ class AttendanceController extends Controller
                 'last_name' => $employee->last_name,
                 'email' => $employee->email
             ], 'EmployeeClockedIn'));
+
+    
+            return back()->with('success', 'Clocked in successfully!');
+
+            
 
         } catch (\Exception $e) {
             \Log::error('Clock-in failed: ' . $e->getMessage(), [

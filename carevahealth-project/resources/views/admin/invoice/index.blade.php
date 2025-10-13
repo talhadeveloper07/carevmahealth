@@ -43,7 +43,8 @@
                                 <th>ID</th>
                                 <th>Invoice #</th>
                                 <th>Client</th>
-                                <th>Period</th>
+                                <th>Period From</th>
+                                <th>Period To</th>
                                 <th>Total Hours</th>
                                 <th>Total Amount</th>
                                 <th>Action</th>
@@ -67,7 +68,8 @@ $(function () {
             { data: 'id', name: 'id' },
             { data: 'invoice_number', name: 'invoice_number' },
             { data: 'client', name: 'client.name' },
-            { data: 'period', name: 'period', orderable: false, searchable: false },
+            { data: 'period_from', name: 'period_from', orderable: false, searchable: false },
+            { data: 'period_to', name: 'period_to', orderable: false, searchable: false },
             { data: 'total_hours', name: 'total_hours' },
             { data: 'total_amount', name: 'total_amount' },
             { data: 'action', name: 'action', orderable: false, searchable: false },

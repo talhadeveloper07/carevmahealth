@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeProfile\ProfileController;
 use App\Http\Controllers\EmployeeProfile\AttendanceController;
+use App\Http\Controllers\EmployeeProfile\CompleteProfileController;
 
 // Route::get('/complete-profile', [AuthController::class, 'showCompleteProfileForm'])
 //     ->name('employee.completeProfile')
@@ -25,6 +26,8 @@ Route::middleware(['auth', 'employee' ,'profile.complete'])->prefix('employee')-
 
     Route::put('change-password', [ProfileController::class, 'change_password'])
     ->name('employees.change-password');
+
+    Route::get('my-schedule',[ProfileController::class,'my_schedule'])->name('employee.schedule');
    
 });
 
@@ -32,5 +35,11 @@ Route::prefix('employee/dashboard/profile')->name('employee.profile.')->group(fu
     Route::get('/edit', [ProfileController::class, 'editProfile'])->name('edit');
     Route::post('/update', [ProfileController::class, 'updateProfile'])->name('update');
     Route::post('/delete-doc', [ProfileController::class, 'delete_document'])->name('delete.document');
-
 });
+
+Route::get('welcome',[CompleteProfileController::class,'welcome'])->name('welcome');
+Route::get('complete-your-profile/{employee}',[CompleteProfileController::class,'complete_profile'])->name('complete.your.profile')->middleware('signed');
+
+Route::post('/employee/profile/update', [CompleteProfileController::class, 'update'])->name('employee.profile.update');
+Route::get('profile-completed/{employee}', [CompleteProfileController::class, 'profile_completed'])->name('employee.completed');
+Route::post('auto-login/{employee}', [CompleteProfileController::class, 'autoLogin'])->name('employee.auto-login');

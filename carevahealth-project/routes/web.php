@@ -37,6 +37,7 @@ Route::get('/complete-profile', [EmployeeController::class, 'showCompleteProfile
 Route::post('/complete-profile', [EmployeeController::class, 'submitCompleteProfile'])->name('employee.submitCompleteProfile');
 
 
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard',[AdminDashboardController::class,'index'])->name('admin.dashboard');
 
@@ -82,6 +83,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('add-invoice',[InvoicesController::class,'add_invoice'])->name('admin.add.invoice');
     Route::get('invoices/{id}/pdf', [InvoicesController::class, 'generateInvoicePdf'])->name('invoices.pdf');
 
+    Route::get('/invoices/{id}/edit', [InvoicesController::class, 'edit'])->name('invoices.edit');
+    Route::put('/invoices/{id}', [InvoicesController::class, 'update'])->name('invoices.update');
+
+
+
 
     // Employee Routes
     Route::get('add-employee',[EmployeeController::class,'add_employee'])->name('add.employee');
@@ -106,6 +112,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/notifications/count', [NotificationController::class, 'count'])->name('notifications.count');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
     Route::post('/notifications/read', [NotificationController::class, 'readSingle'])->name('notifications.readSingle');
+
+    Route::post('/employee/{id}/resend-profile-email', [EmployeeController::class, 'resendCompleteProfileEmail'])
+    ->name('employee.resendProfileEmail');
+
 
 });
 

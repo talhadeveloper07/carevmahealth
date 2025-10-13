@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\User;
 use App\Models\Attendance;
+use App\Models\EmployeeClientSchedule;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,13 +26,13 @@ class ProfileController extends Controller
     
         // Local date according to employee’s timezone
         $todayLocal = now($tz)->toDateString();
+        $todayWeekday = strtolower(now($tz)->format('l')); // e.g. monday, tuesday
     
-        // Fetch today's attendance (date column stores employee's local date)
         $attendanceToday = Attendance::where('employee_id', $employee->id)
             ->where('date', $todayLocal)
             ->first();
     
-        // Convert times into employee’s local timezone for display
+
         if ($attendanceToday) {
             if ($attendanceToday->clock_in) {
                 $attendanceToday->clock_in_local = $attendanceToday->clock_in->copy()->timezone($tz);
@@ -40,11 +41,16 @@ class ProfileController extends Controller
                 $attendanceToday->clock_out_local = $attendanceToday->clock_out->copy()->timezone($tz);
             }
         }
+
+        $hasShiftToday = EmployeeClientSchedule::where('employee_id', $employee->id)
+            ->where('weekday', $todayWeekday)
+            ->where('enabled', true)
+            ->exists();
     
-        return view('employee.dashboard.index', compact('employee', 'attendanceToday'));
+        return view('employee.dashboard.index', compact('employee', 'attendanceToday', 'hasShiftToday'));
     }
     
-
+    
     public function editProfile()
     {
         $employee = Employee::where('user_id', Auth::id())->first();
@@ -94,7 +100,6 @@ class ProfileController extends Controller
 
         $field = $request->field;
 
-        // ✅ Handle upload_documents separately
         if ($field === 'upload_documents' && $request->hasFile('value')) {
             $path = $request->file('value')->store("employees/documents/{$employee->id}", 'public');
         
@@ -106,11 +111,10 @@ class ProfileController extends Controller
                 $docs = json_decode($docs, true) ?? [];
             }
         
-            // Add new document
             $docs[] = $path;
         
-            // Save back to DB (no json_encode needed if $casts is set)
             $employee->upload_documents = $docs;
+            $employee->profile_completed = true;
             $employee->save();
         
             return response()->json([
@@ -294,6 +298,18 @@ class ProfileController extends Controller
         $employee->save();
 
         return back()->with('success', 'Password updated successfully!');
+    }
+
+    public function my_schedule(Request $request)
+    {
+        $employee = Employee::where('user_id', Auth::id())->firstOrFail();
+
+        $schedules = $employee->clientSchedules()
+            ->with('client')
+            ->orderBy('weekday')
+            ->orderBy('start_time')
+            ->get();
+        return view('employee.schedule.index',compact('schedules'));
     }
 
 }

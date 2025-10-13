@@ -20,6 +20,7 @@
         .account-details p { margin: 2px 0; }
         .note { font-size: 11px; color: #555; margin-top: 10px; }
         .footer { text-align: center; font-weight: bold; color: #0072bc; margin-top: 20px; }
+        .page-break { page-break-after: always; }
     </style>
 </head>
 <body>
@@ -108,6 +109,47 @@
         </p>
 
         <div class="footer">THANK YOU FOR YOUR BUSINESS!</div>
+    </div>
+
+    {{-- Page Break --}}
+    <div class="page-break"></div>
+
+    {{-- Attendance Page --}}
+    <div class="invoice-box">
+        <h2 style="color:#0072bc;">Attendance Records</h2>
+
+        @foreach($invoice->salaries as $salary)
+            <h4>{{ $salary->employee->first_name }} {{ $salary->employee->last_name }}</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Clock In</th>
+                        <th>Clock Out</th>
+                        <th>Hours Worked</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($salary->employee->attendances as $attendance)
+                        <tr>
+                            <td>{{ \Carbon\Carbon::parse($attendance->date)->format('d-M-Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($attendance->clock_in)->format('h:i A') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($attendance->clock_out)->format('h:i A') }}</td>
+                            <td>@php
+                                    $minutes = $attendance->total_minutes; // example
+                                    $hours = intdiv($minutes, 60);
+                                    $mins = $minutes % 60;
+                                @endphp
+                                {{ $hours > 0 ? $hours . ' hrs ' : '' }}{{ $mins > 0 ? $mins . ' mins' : '' }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center">No attendance records found</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        @endforeach
     </div>
 </body>
 </html>

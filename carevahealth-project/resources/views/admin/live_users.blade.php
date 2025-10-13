@@ -6,47 +6,70 @@
         position: relative;
         display: inline-block;
     }
-    .pulse-icon::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 40px;
-        height: 40px;
-        background: rgba(0, 200, 83, 0.3);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        animation: pulse 1.5s infinite;
+    .img-div{
+        position: relative;
     }
-    .pulse-danger::after { background: rgba(220, 53, 69, 0.3); }
-    .pulse-warning::after { background: rgba(255, 193, 7, 0.3); }
-    .pulse-secondary::after { background: rgba(108, 117, 125, 0.3); }
-
-    @keyframes pulse {
-        0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
-        70% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
-        100% { opacity: 0; }
+    .img-div i {
+    position: absolute;
+    right: 2px;
+    bottom: 11px;
     }
 </style>
 
-<div class="container">
-    <h3 class="mb-4 mt-5">Today’s Attendance Status</h3>
+<div class="container flex-grow-1 container-p-y">
+        <div class='row d-flex justify-content-center mt-5 align-items-center mb-5'>
+            <div class="col-md-5 custom-title-col">
+                <h4 class='mb-0 custom-page-title'>Today’s Attendance</h4>
+                <p>You can see all employees live status details here.</p>
+            </div>
+            <div class="col-md-5 text-end">
+                <a href="{{ route('all.employees') }}" class='btn cstm-btn-link text-white'>Employees</a>
+            </div>
 
-    <!-- Live Users -->
-    <h5 class="mb-3 text-success">Live Users</h5>
-    <div class="row" id="liveUsersRow"></div>
+            <div class="col-md-10 mt-5">
+                @if(session('success'))
+                    <div class="alert alert-solid-success d-flex align-items-center" role="alert">
+                        <span class="alert-icon rounded">
+                            <i class="icon-base ti tabler-check icon-md"></i>
+                        </span>
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-    <!-- Checked Out Users -->
-    <h5 class="mb-3 text-danger">Checked Out Users</h5>
-    <div class="row" id="checkedOutUsersRow"></div>
-
-    <!-- Offline Users -->
-    <h5 class="mb-3 text-secondary">Offline Users</h5>
-    <div class="row" id="offlineUsersRow"></div>
-
-    <!-- Late Users -->
-    <h5 class="mb-3 text-warning">Late Users</h5>
-    <div class="row" id="lateUsersRow"></div>
+                @if ($errors->any())
+                    <div class="alert alert-solid-danger d-flex align-items-center" role="alert">
+                        <span class="alert-icon rounded">
+                            <i class="icon-base ti tabler-ban icon-md"></i>
+                        </span>
+                        {{ implode(' | ', $errors->all()) }}
+                    </div>
+                @endif
+            </div>
+        </div>
+   <div class="row d-flex align-items-center justify-content-center">
+    <div class="col-md-10 mb-5">
+        <!-- Live Users -->
+        <div class="custom-card-body mb-3">
+        <h5 style="font-weight:700;margin-bottom:30px !important;">Live Users</h5>
+        <div class="d-flex align-items-center justify-content-start gap-5" id="liveUsersRow"></div>
+        </div>
+        <!-- Checked Out Users -->
+        <div class="custom-card-body mb-3">
+        <h5 style="font-weight:700;margin-bottom:30px !important;">Checked Out Users</h5>
+        <div class="d-flex align-items-center justify-content-start gap-5" id="checkedOutUsersRow"></div>
+        </div>
+        <!-- Offline Users -->
+        <div class="custom-card-body mb-3">
+        <h5 style="font-weight:700;margin-bottom:30px !important;">Offline Users</h5>
+        <div class="d-flex align-items-center justify-content-start gap-5" id="offlineUsersRow"></div>
+        </div>
+        <div class="custom-card-body mb-3">
+        <!-- Late Users -->
+        <h5 style="font-weight:700;margin-bottom:30px !important;">Late Users</h5>
+        <div class="d-flex align-items-center justify-content-start gap-5" id="lateUsersRow"></div>
+        </div>
+    </div>
+   </div>
 </div>
 
 <!-- ✅ AJAX Script -->
@@ -77,18 +100,27 @@
         }
 
         return `
-            <div class="col-lg-3 col-sm-6 mb-4 user-card" data-type="${type}">
-                <div class="card ${border} h-100">
-                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
-                        <div class="${pulseClass} mb-2">
-                            <i class="${icon} rounded icon-12px"></i>
-                        </div>
-                        <h5 class="mb-1">${user.full_name}</h5>
-                        <p class="${type === 'offline' ? 'text-muted' : (type === 'checkedOut' ? 'text-danger' : (type === 'late' ? 'text-warning' : 'text-success'))} small mb-0">${label}</p>
-                    </div>
-                </div>
+        <div class="h-100" data-type="${type}">
+            <div class="d-flex flex-column justify-content-center align-items-center text-center">
+              <div class='img-div'>
+              <i class="${icon} rounded icon-12px"></i>
+                
+                <!-- User Image -->
+                
+                <img 
+                    src="${user.profile_picture 
+                                ? `/storage/${user.profile_picture}` 
+                                : `/profile.png`}" 
+                    alt="${user.full_name}" 
+                    class="rounded-circle mb-2" 
+                    style="width:50px; height:50px; object-fit:cover;"
+                />
+              </div>
+                <h5 class="mb-1" style="font-size:12px;font-weight:700;">${user.full_name}</h5>
             </div>
-        `;
+        </div>
+`;
+
     }
 
     async function refreshAttendance() {
